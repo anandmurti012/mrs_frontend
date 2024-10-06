@@ -1,0 +1,273 @@
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f4;
+}
+
+.admin-dashboard {
+  display: flex;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  background: linear-gradient(to right, #883ddf, #3b82f6); /* Adjust colors */
+  -webkit-background-clip: text;
+  color: transparent;
+  padding: 20px;
+  width: 250px;
+  height: 100vh;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2); /* Add shadow to sidebar */
+}
+
+.sidebar h2 {
+  font-size: 1.5em;
+  color: #ffffff;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+nav ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+nav ul li {
+  margin: 15px 0;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for each item */
+}
+
+nav ul li:hover {
+  background-color: rgba(136, 61, 223, 0.1); /* Hover background matches gradient */
+}
+
+nav ul li.active {
+  background: linear-gradient(to right, #883ddf, #3b82f6); /* Matches active tab heading */
+  color: white;
+  font-weight: bold;
+  box-shadow: 1px 1px 10px rgba(136, 61, 223, 0.5); /* More pronounced shadow for active */
+}
+
+nav ul li.active:hover {
+  background: linear-gradient(to right, #883ddf, #3b82f6);
+}
+
+/* Other styles remain unchanged */
+
+
+.content {
+  flex: 1;
+  padding: 20px;
+  background-color: white;
+  border-left: 1px solid #ccc;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+.doctor-form {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.doctor-form h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.3s;
+}
+
+input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+button {
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+.error {
+  color: red;
+  font-size: 0.875em;
+  margin-top: 5px;
+}
+/* AdminPanel.css */
+
+/* General Styles */
+table {
+  width: 100%;
+  max-width: 90%; /* Reduce the overall width */
+  border-collapse: collapse;
+  margin: 10px 0; /* Less margin */
+  font-size: 14px; /* Smaller font size */
+  text-align: left;
+  background-color: #f9f9f9;
+}
+
+th, td {
+  padding: 8px 12px; /* Reduced padding */
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+/* Table Header */
+thead th {
+  background-color: #3449c0;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 14px; /* Smaller font for header */
+}
+
+/* Table Rows */
+tbody tr {
+  transition: background-color 0.3s ease;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Buttons */
+button {
+  padding: 4px 8px; /* More compact button padding */
+  font-size: 12px; /* Smaller font size for buttons */
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 3px; /* Slightly rounded corners */
+}
+
+button:focus {
+  outline: none;
+}
+
+button:hover {
+  opacity: 0.85;
+}
+
+button.green {
+  background-color: #28a745;
+  color: white;
+}
+
+button.red {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* Responsive Table */
+@media screen and (max-width: 768px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+    width: 100%;
+  }
+
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  tbody tr {
+    margin-bottom: 20px;
+  }
+
+  td {
+    position: relative;
+    padding-left: 45%;
+  }
+
+  td:before {
+    content: attr(data-label);
+    position: absolute;
+    left: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 12px; /* Smaller label size on mobile */
+  }
+}
+/* AdminPanel.css */
+.active-tab-heading {
+  display: inline-block; /* To make sure the background is only till the text length */
+  font-size: 20px; /* Adjust the font size as needed */
+  font-weight: bold; /* Optional: Makes the heading bold */
+  
+  /* Linear gradient background */
+  background: linear-gradient(to right, #883ddf, #3b82f6); /* Adjust colors */
+  -webkit-background-clip: text;
+  color: transparent; /* Makes the text itself transparent, while showing the gradient */
+  
+  /* Optional: Adds padding inside the text */
+  padding: 4px 8px;
+}
+.admin-panel {
+  padding: 20px;
+  background-color: #f4f4f4;
+}
+
+.doctor-form {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.availability-section {
+  margin-top: 20px;
+  display: flex; /* Enable flexbox */
+  flex-wrap: wrap; /* Allow wrapping for smaller screens */
+  gap: 10px; /* Add some space between checkboxes */
+}
+
+.availability-section h3 {
+  color: #333;
+  flex-basis: 100%; /* Ensure the header takes the full width */
+}
+
+.availability-section label {
+  display: flex; /* Change to flex for proper alignment */
+  align-items: center; /* Center align items */
+  cursor: pointer;
+}
+
+.availability-section input {
+  margin-right: 5px; /* Add space between checkbox and label */
+}
+
+

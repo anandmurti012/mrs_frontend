@@ -1,0 +1,92 @@
+.footer-container {
+  display: flex;
+  justify-content: space-between; /* To place booking info and contact/social links side by side */
+  align-items: flex-start;
+  background-color: #282c34;
+  color: #fff;
+  padding: 20px;
+  position: relative;
+  height: auto; /* Adjust height to auto to avoid extra space */
+  margin-top: 50px;
+  border-top: 5px solid #444;
+  flex-wrap: wrap; /* To make it responsive */
+}
+
+.booking-info {
+  flex: 1; /* Make it take up the left side */
+  padding: 20px;
+  background-color: rgb(214, 230, 233);
+  border-radius: 8px;
+  margin-right: 20px;
+  text-align: left;
+  color:rgb(36, 135, 221);
+}
+ 
+.booking-info h2 {
+  font-size: 22px;
+  margin-bottom: 10px;
+  color: #91b8eb;
+}
+
+.booking-info p {
+  margin: 8px 0;
+}
+
+.confirmation-icon {
+  color: #4caf50;
+  margin-left: 10px;
+}
+
+/* Contact & Social Media Section */
+.contact-info, .social-media {
+  flex: 0.5; /* Make contact and social media section narrower */
+  padding: 10px;
+  background-color: transparent;
+  border-radius: 8px;
+}
+
+.contact-info h3, .social-media h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #91b8eb;
+}
+
+.contact-info p, .social-media a {
+  margin: 8px 0;
+  color: #aaa;
+}
+
+.social-icon {
+  margin-right: 10px;
+  color: #91b8eb;
+  font-size: 24px;
+}
+
+.social-media a {
+  text-decoration: none;
+}
+
+/* Developer info and copyright */
+.developer-info, .footer-content {
+  text-align: center;
+  width: 100%;
+  margin-top: 20px;
+  color: #aaa;
+}
+
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column; /* Make it stack vertically on smaller screens */
+    align-items: center;
+  }
+  
+  .booking-info {
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+
+  .contact-info, .social-media {
+    flex: 1;
+    text-align: center;
+  }
+}
