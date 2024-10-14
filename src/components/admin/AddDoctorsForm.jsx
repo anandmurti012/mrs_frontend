@@ -44,11 +44,8 @@ const AddDoctorsForm = () => {
             consultation: Yup.number().required('Consultation quota is required').min(1, 'Minimum 1 required'),
             experience: Yup.number().required('Experience is required').min(0, "Experience can't be negative"),
             specialization: Yup.string().required('Specialization is required'),
-            availability: Yup.array().min(1, 'At least one day must be selected'),
         }),
         onSubmit: async (values) => {
-            console.log("Form values before submission:", values);
-            console.log("Validation errors:", formik.errors);
             try {
                 const modifiedValues = {
                     ...values,
@@ -59,7 +56,6 @@ const AddDoctorsForm = () => {
                 formik.resetForm();
                 setAvailability([]);
             } catch (error) {
-                console.error("Error adding doctor:", error); // Added logging for the error
                 toast.error('Error adding doctor');
             }
         },
