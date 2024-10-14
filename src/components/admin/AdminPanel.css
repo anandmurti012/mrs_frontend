@@ -127,28 +127,67 @@ button:hover {
 /* General Styles */
 table {
   width: 100%;
-  max-width: 90%; /* Reduce the overall width */
+  max-width: 90%;
   border-collapse: collapse;
-  margin: 10px 0; /* Less margin */
-  font-size: 14px; /* Smaller font size */
+  margin: 10px 0;
+  font-size: 14px;
   text-align: left;
   background-color: #f9f9f9;
 }
 
 th, td {
-  padding: 8px 12px; /* Reduced padding */
+  padding: 8px 12px; /* Reduced padding for table cells */
   border: 1px solid #ddd;
   text-align: center;
 }
 
-/* Table Header */
+thead {
+  background: linear-gradient(to bottom, #883ddf, #3b82f6);
+}
+
 thead th {
-  background-color: #3449c0;
   color: white;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  font-size: 14px; /* Smaller font for header */
+  font-size: 14px;
+  padding: 4px 8px; /* Smaller padding for header */
+  white-space: nowrap; /* Prevents text from wrapping to the next line */
+  overflow: hidden; /* Hides any overflow */
+  text-overflow: ellipsis; /* Adds ellipsis (...) if content overflows */
 }
+
+/* Tooltip on hover */
+th {
+  position: relative;
+  text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+th::after {
+  content: attr(data-title);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, #3b82f6, #883ddf);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+th:hover::after {
+  opacity: 1;
+  z-index: 1; /* Ensure it's above other elements */
+}
+
+
 
 /* Table Rows */
 tbody tr {
@@ -249,10 +288,8 @@ button.red {
 }
 
 .availability-section {
-  margin-top: 20px;
-  display: flex; /* Enable flexbox */
-  flex-wrap: wrap; /* Allow wrapping for smaller screens */
-  gap: 10px; /* Add some space between checkboxes */
+  display: flex; /* Use flexbox for alignment */
+  flex-direction: column; /* Stack elements vertically */
 }
 
 .availability-section h3 {
@@ -269,5 +306,52 @@ button.red {
 .availability-section input {
   margin-right: 5px; /* Add space between checkbox and label */
 }
+.availability-slot {
+  display: flex; /* Use flexbox for the individual slot */
+  align-items: center; /* Center items vertically */
+  margin-bottom: 5px; /* Spacing between slots */
+}
+
+.availability-slot input[type='checkbox'] {
+  margin-right: 10px; /* Spacing between checkbox and day label */
+}
+.time-inputs {
+  display: flex; /* Flexbox for time inputs */
+  align-items: center; /* Center inputs vertically */
+  margin-left: 10px; /* Spacing between day label and time inputs */
+}
+
+.time-inputs input[type='time'] {
+  margin-right: 5px; /* Space between time inputs */
+  width: 80px; /* Set a fixed width for time inputs */
+}
+
+td {
+  padding: 10px;
+  vertical-align: middle; /* Center cell contents vertically */
+  overflow: hidden; /* Prevent overflow */
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+td.scrollable {
+  overflow-x: auto; /* Enable scrolling for specific cells */
+}
+.password-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input input {
+  width: 100%;
+  padding-right: 30px; /* Add padding to the right to make space for the icon */
+}
+
+.password-input span {
+  position: absolute;
+  right: 10px; /* Position the icon within the input field */
+  cursor: pointer;
+}
+
 
 
