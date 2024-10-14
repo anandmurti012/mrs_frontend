@@ -1,0 +1,51 @@
+.doctor-form {
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #f9f9f9;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.error {
+    color: red;
+    font-size: 0.8em;
+}
+
+.availability-section {
+    margin-top: 20px;
+}
+
+.availability-day {
+    margin-bottom: 10px;
+}
+
+.time-slots {
+    margin-left: 20px;
+}
+
+.time-slot {
+    display: flex;
+    align-items: center;
+}
+
+.time-slot input {
+    margin-right: 5px;
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
