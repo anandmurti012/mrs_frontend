@@ -1,0 +1,10 @@
+ /* styles.css */
+.black-row {
+  
+  color: grey; /* White text for better readability */
+}
+
+.golden-row {
+  
+  color: grey; /* Black text for readability on golden background */
+}

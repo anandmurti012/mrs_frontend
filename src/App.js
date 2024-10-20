@@ -1,40 +1,241 @@
+// import React, { useState } from 'react';
+// import { BrowserRouter as Router, Route, Routes, NavLink } from 'react-router-dom'; // Import Router components
+// import UserForm from './components/UseForm';
+// import 'bootstrap/dist/css/bootstrap.min.css'; 
+// import "./App.css";
+// import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material'; // MUI components
+// import AdminPanel from './components/admin/AdminPanel';
+// import Footer from './components/users/Footer';
+// import AdminLogin from './components/admin/adminLogin';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import {  faUser } from '@fortawesome/free-solid-svg-icons';
+// import AdminBooking from './components/admin/AdminBooking';
+
+// function App() {
+ 
+//     const [open, setOpen] = useState(false);
+  
+//     const handleClickOpen = () => {
+//       setOpen(true);
+//     };
+  
+//     const handleClose = () => {
+//       setOpen(false);
+//     };
+//   return (
+//     <Router>
+//       <div className="App">
+//         {/* Flex container to align heading and button on the same line */}
+//         <div className="d-flex align-items-center justify-content-between mt-3">
+//           <img style={{height:'100px', width:'100px', marginLeft:'50px', marginBottom:'10px'}} src='https://mrshospital.org/wp-content/uploads/2023/06/mrslogo-1.png'></img>
+//           <h1 style={{marginRight:'100px'}} className='text'>MRS Hospital - Online Booking</h1>
+//           <strong><p>Booking by Admin <Button className='btn btn-primary' onClick={handleClickOpen}>
+//         <FontAwesomeIcon icon={faUser} />
+//       </Button></p></strong>
+//         </div>
+
+//         <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+//         <DialogTitle>Admin Booking Form</DialogTitle>
+//         <DialogContent>
+//           {/* Use the existing UserForm inside the modal */}
+//           <UserForm />
+//         </DialogContent>
+//         <DialogActions>
+//           <Button onClick={handleClose} color="primary">Close</Button>
+//         </DialogActions>
+//       </Dialog>
+
+
+//         {/* Define Routes */}
+//         <Routes>
+//           <Route path="/" element={<UserForm />} /> {/* Default route */}
+//           <Route path="/admin" element={<AdminPanel />} /> {/* AdminPanel route */}
+//           {/* <Route path="/adminBooking" element={<AdminBooking />} /> AdminPanel route */}
+//         </Routes>
+//         <div>
+//           {/* Use NavLink to link to AdminPanel */}
+//           <div className="mt-3">
+//           <AdminLogin/>
+//         </div>
+//         </div>
+//         <Footer />
+//       </div>
+//     </Router>
+//   );
+// }
+
+// export default App;
+
+//===========================
+// import React from 'react';
+// import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom'; // Import Router components
+// import UserForm from './components/UseForm';
+// import 'bootstrap/dist/css/bootstrap.min.css'; 
+// import './App.css';
+// import AdminPanel from './components/admin/AdminPanel';
+// import Footer from './components/users/Footer';
+// import AdminLogin from './components/admin/adminLogin';
+// import AdminBooking from './components/admin/AdminBooking'; // Import the AdminBooking component
+
+// function App() {
+//   const location = useLocation(); // Get the current route
+
+//   return (
+//     <div className="App">
+//       {/* Flex container for header */}
+//       <div className="d-flex align-items-center justify-content-between" style={{ margin: '20px' }}>
+//         {/* Logo on the left with margin */}
+//         <img
+//           style={{
+//             height: '100px',
+//             width: '100px',
+//             marginLeft: '20px',
+//           }}
+//           src="https://mrshospital.org/wp-content/uploads/2023/06/mrslogo-1.png"
+//           alt="MRS Logo"
+//         />
+
+//         {/* Center the "MRS Hospital - Online Booking" text */}
+//         <h1 style={{
+//             margin: '0 auto', // Center the heading
+//             textAlign: 'center', // Center align text
+//             flex: 1, // Allow it to grow and take up remaining space
+//           }} 
+//           className="text"
+//         >
+//           MRS Hospital - Online Booking
+//         </h1>
+
+//         {/* Conditionally render the "Booking by Admin" section based on current route */}
+//         {location.pathname === '/admin' && (
+//           <div style={{ display: 'flex', alignItems: 'center', marginRight: '50px' }}>
+//             <p style={{ margin: '0', paddingRight: '5px' }}>
+//             <AdminBooking />
+//             </p> 
+//           </div>
+//         )}
+//       </div>
+
+//       {/* Define Routes */}
+//       <Routes>
+//         <Route path="/" element={<UserForm />} /> {/* Default route */}
+//         <Route path="/admin" element={<AdminPanel />} /> {/* AdminPanel route */}
+//       </Routes>
+
+//       <div>
+//         {/* Conditionally render Admin Login based on current route */}
+//         {location.pathname === '/' && (
+//           <div className="mt-3 loginPosition">
+//             <AdminLogin />
+//           </div>
+//         )}
+//       </div>
+
+//       <Footer />
+//     </div>
+//   );
+// }
+
+// export default App;
+
+//==================================================recent modification 9:41 20 oct
+// File: src/App.js
+
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, NavLink } from 'react-router-dom'; // Import Router components
+import { BrowserRouter as Router, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import UserForm from './components/UseForm';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
-import "./App.css";
+import './App.css';
 import AdminPanel from './components/admin/AdminPanel';
 import Footer from './components/users/Footer';
 import AdminLogin from './components/admin/adminLogin';
+import AdminBooking from './components/admin/AdminBooking';
+import { FaPowerOff } from 'react-icons/fa';
+
 
 function App() {
+  const location = useLocation();
+  const adminName = 'Admin'; // Dummy admin name
+  const navigate = useNavigate(); // Hook for navigation
+  
+  // Logout function
+  const handleLogout = () => {
+    // Perform any necessary logout actions (e.g., clearing tokens)
+    navigate('/'); // Redirect to home page
+  };
+
   return (
-    <Router>
-      <div className="App">
-        {/* Flex container to align heading and button on the same line */}
-        <div className="d-flex align-items-center justify-content-evenly mt-3">
-          <h1 className='text'>Welcome to MRS Hospital</h1>
-        </div>
+    <div className="App">
+      <div className="d-flex align-items-center justify-content-between" style={{ margin: '20px' }}>
+        {/* Logo */}
+        <img
+          style={{
+            height: '100px',
+            width: '100px',
+            marginLeft: '20px',
+          }}
+          src="https://mrshospital.org/wp-content/uploads/2023/06/mrslogo-1.png"
+          alt="MRS Logo"
+        />
 
+        {/* Heading */}
+        <h1 style={{
+            margin: '0 auto',
+            textAlign: 'center',
+            flex: 1,
+          }} 
+          className="text"
+        >
+          MRS Hospital - Online Booking
+        </h1>
 
-        {/* Define Routes */}
-        <Routes>
-          <Route path="/" element={<UserForm />} /> {/* Default route */}
-          <Route path="/admin" element={<AdminPanel />} /> {/* AdminPanel route */}
-        </Routes>
-        <div>
-          {/* Use NavLink to link to AdminPanel */}
-          <div className="mt-3">
-          <AdminLogin/>
-        </div>
-        </div>
-        <Footer />
+        {/* Admin section visible only on '/admin' */}
+        {location.pathname === '/admin' && (
+          <div style={{ display: 'flex', alignItems: 'center', marginRight: '50px' }}>
+             
+            <p style={{ margin: '0', paddingRight: '5px' }}>
+              <AdminBooking />
+            </p>
+            <div className="d-flex align-items-center">
+              {/* Admin welcome text */}
+              {/* Logout button */}
+              <button 
+                className="btn btn-danger" // Bootstrap styling for visibility
+                onClick={handleLogout}
+              >
+                <FaPowerOff />
+                {/* FontAwesome power icon */}
+              </button>
+            </div>
+            <p style={{marginBottom:'70px'}} className="me-3"><strong>{adminName}</strong></p>
+          </div>
+        )}
       </div>
-    </Router>
+
+      {/* Routes */}
+      <Routes>
+        <Route path="/" element={<UserForm />} />
+        <Route path="/admin" element={<AdminPanel />} />
+      </Routes>
+
+      {/* Admin login section for '/' */}
+      <div>
+        {location.pathname === '/' && (
+          <div className="mt-3 loginPosition">
+            <AdminLogin />
+          </div>
+        )}
+      </div>
+
+      <Footer />
+    </div>
   );
 }
 
 export default App;
+
+
+
 
 
 //==============================//===============================//==========================

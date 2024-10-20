@@ -142,14 +142,14 @@ th, td {
 }
 
 thead {
-  background: linear-gradient(to bottom, #883ddf, #3b82f6);
+  background: #0d6dfc;
 }
 
 thead th {
   color: white;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  font-size: 14px;
+  font-size: 16px;
   padding: 4px 8px; /* Smaller padding for header */
   white-space: nowrap; /* Prevents text from wrapping to the next line */
   overflow: hidden; /* Hides any overflow */
@@ -158,35 +158,12 @@ thead th {
 
 /* Tooltip on hover */
 th {
-  position: relative;
-  text-align: center;
-  white-space: nowrap;
-  text-overflow: ellipsis;
   cursor: pointer;
 }
 
-th::after {
-  content: attr(data-title);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to bottom, #3b82f6, #883ddf);
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
+ 
 
-th:hover::after {
-  opacity: 1;
-  z-index: 1; /* Ensure it's above other elements */
-}
-
+ 
 
 
 /* Table Rows */
@@ -247,10 +224,6 @@ button.red {
     margin-bottom: 20px;
   }
 
-  td {
-    position: relative;
-    padding-left: 45%;
-  }
 
   td:before {
     content: attr(data-label);
@@ -331,6 +304,8 @@ td {
   vertical-align: middle; /* Center cell contents vertically */
   overflow: hidden; /* Prevent overflow */
   white-space: nowrap; /* Prevent text wrapping */
+  font-size: 15px;
+  /* font-weight: bold; */
 }
 
 td.scrollable {
@@ -351,6 +326,26 @@ td.scrollable {
   position: absolute;
   right: 10px; /* Position the icon within the input field */
   cursor: pointer;
+}
+/* AdminPanel.css */
+
+/* Style for top-right bar with Welcome message and Logout button */
+.top-right-bar {
+  display: flex;
+  justify-content: flex-end; /* Aligns items to the right */
+  align-items: center; /* Vertically centers the items */
+  padding: 10px 20px; /* Adds some padding for spacing */
+  background-color: transparent; /* Light background for separation */
+/* Optional border for separation */
+}
+
+.top-right-bar h2 { /* Adds space between the text and the button */
+  font-size: 18px;
+  color: #333;
+}
+
+.top-right-bar .btn-danger {
+  padding: 8px 16px;
 }
 
 

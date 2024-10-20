@@ -1,14 +1,13 @@
- import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { setDoctorDetails } from '../redux/doctorSlice';
+import { setDoctorDetails } from '../../../src/redux/doctorSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserDoctor, faUser, faAddressBook, faPhone, faEnvelope, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
-import './UseForm.css';
 
-const UserForm = () => {
+const AdminForm = () => {
   const dispatch = useDispatch();
   const { doctorName, bookingTime, userName, pAddress, pPhone } = useSelector((state) => state.doctor);
 
@@ -22,7 +21,7 @@ const UserForm = () => {
     doctor: '',
     day: '',
     timeSlot: [],
-    addedBy: 'user', // Set to 'user' by default
+    addedBy: 'admin', // Set to 'user' by default
     adminId: 8,
     adminName: 'vikash'
   });
@@ -127,7 +126,7 @@ const UserForm = () => {
       console.log("selectedAdmin", selectedAdmin);
       const submissionData = {
         ...formData,
-        addedBy: 'user', // or set as 'admin' based on condition
+        addedBy: 'admin', // or set as 'admin' based on condition
         adminId: 8,
         adminName:'vikash',
       };
@@ -135,7 +134,7 @@ const UserForm = () => {
       console.log("submissionData:::::",submissionData);
 
       try {
-        const response = await axios.post(`${process.env.REACT_APP_APIURL}/api/users/`, submissionData);
+        const response = await axios.post(`${process.env.REACT_APP_APIURL}/api/adminCreates/`, submissionData);
         if (response.status === 201) {
           dispatch(setDoctorDetails({
             doctorName: formData.doctor,
@@ -143,13 +142,13 @@ const UserForm = () => {
             userName: formData.name,
             pAddress: formData.address,
             pPhone: formData.phone,
-            addedBy: 'user', // or set as 'admin' based on condition
+            addedBy: 'admin', // or set as 'admin' based on condition
             adminId: 8,
             adminName: 'vikash',
            
           }));
           toast.success('User added successfully!');
-          setFormData({ name: '', address: '', phone: '', email: '', gender: '', age: '', doctor: '', day: '', timeSlot: [], addedBy: 'user', adminId: 8, adminName: 'vikash' });
+          setFormData({ name: '', address: '', phone: '', email: '', gender: '', age: '', doctor: '', day: '', timeSlot: [], addedBy: 'admin', adminId: 8, adminName: 'vikash' });
        console.log("formData;;;;;", formData)
         } else {
           throw new Error('Unexpected response status');
@@ -261,7 +260,7 @@ const UserForm = () => {
   );
 };
 
-export default UserForm;
+export default AdminForm;
 
 
 

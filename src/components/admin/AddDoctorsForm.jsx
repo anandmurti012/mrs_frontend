@@ -23,8 +23,13 @@ const AddDoctorsForm = () => {
         });
         setAvailability(updatedAvailability);
     };
-
+    // const handleAvailabilityChange = (index, field, value) => {
+    //     const updatedAvailability = [...availability];
+    //     updatedAvailability[index][field] = value;
+    //     setAvailability(updatedAvailability);
+    // };
     // Formik for form handling
+    
     const formik = useFormik({
         initialValues: {
             name: '',
@@ -87,7 +92,7 @@ const AddDoctorsForm = () => {
 
     return (
         <div>
-            <ToastContainer />
+         
             <form className="doctor-form" onSubmit={formik.handleSubmit}>
                 <div className="form-group">
                     <label>Doctor's Name:</label>
@@ -233,6 +238,7 @@ const AddDoctorsForm = () => {
 
                 <button type="submit">Add Doctor</button>
             </form>
+            <ToastContainer />
         </div>
     );
 };

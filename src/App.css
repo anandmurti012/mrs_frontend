@@ -37,3 +37,9 @@
     transform: rotate(360deg);
   }
 }
+.loginPosition {
+  display: flex; /* Enable flexbox */
+  justify-content: flex-end; /* Push content to the right */
+  margin-right: 20px; /* Add right margin */
+  font-size: 17px;
+}

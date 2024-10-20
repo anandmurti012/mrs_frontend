@@ -1,0 +1,84 @@
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  width: 90%;
+}
+
+.popup-content h2 {
+  text-align: center;
+  color: #4A90E2; /* Example color for the heading */
+  
+}
+
+.popup-content p {
+  margin: 10px 0; /* Add margin for spacing */
+}
+
+.light-color {
+  background-color: #ebeeee; /* Light color for the first element */
+}
+
+.light-color2 {
+  background-color: #e3f5f5; /* Another light color for the second element */
+}
+
+
+/* Add gap between buttons */
+.popup-content button {
+  margin-right: 10px; /* Adjust this value as needed for more or less gap */
+}
+
+/* Add cursor pointer when hovering over patient's name */
+tbody tr td:first-child {
+  cursor: pointer; /* Changes cursor to pointer on hover */
+}
+
+tbody tr td:first-child:hover {
+  text-decoration: underline; /* Optional: Add underline effect on hover */
+}
+.button-container {
+  display: flex;
+  justify-content: flex-end; /* Align buttons to the right */
+  margin-top: 20px; /* Add some space above the buttons */
+}
+
+.button-container button {
+  margin-left: 10px; /* Space between buttons */
+}
+.modal-content {
+  overflow: hidden; /* Prevent overflow in the modal */
+}
+
+.modal-header {
+  border-bottom: 1px solid #dee2e6; /* Optional border */
+}
+
+.modal-footer {
+  border-top: 1px solid #dee2e6; /* Optional border */
+}
+/* styles.css */
+.even-row {
+  
+  color: grey; /* Change text color for better readability */
+}
+
+.odd-row {
+  
+  color: grey;
+}
