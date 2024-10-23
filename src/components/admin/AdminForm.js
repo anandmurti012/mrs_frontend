@@ -180,7 +180,7 @@ const AdminForm = () => {
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="user-form">
-          <h1 className="form-title"><FontAwesomeIcon icon={faUserDoctor} /> Book Your Appointment</h1>
+          <h1 className="form-title"><FontAwesomeIcon icon={faUserDoctor} /> Book an Appointment</h1>
           <div className="form-group">
             <label htmlFor="name"><p className='text-style'><FontAwesomeIcon icon={faUser} /> Name</p></label>
             <input id="name" name="name" value={formData.name} onChange={handleChange} />
