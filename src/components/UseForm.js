@@ -135,7 +135,7 @@ const UserForm = () => {
       console.log("submissionData:::::",submissionData);
 
       try {
-        const response = await axios.post(`${process.env.REACT_APP_APIURL}/api/users/`, submissionData);
+        const response = await axios.post(`${process.env.REACT_APP_APIURL}/api/bookings/`, submissionData);
         if (response.status === 201) {
           dispatch(setDoctorDetails({
             doctorName: formData.doctor,
@@ -148,15 +148,15 @@ const UserForm = () => {
             adminName: 'vikash',
            
           }));
-          toast.success('User added successfully!');
+          toast.success('Booking done successfully!');
           setFormData({ name: '', address: '', phone: '', email: '', gender: '', age: '', doctor: '', day: '', timeSlot: [], addedBy: 'user', adminId: 8, adminName: 'vikash' });
        console.log("formData;;;;;", formData)
         } else {
           throw new Error('Unexpected response status');
         }
       } catch (err) {
-        console.error('Error adding user:', err.response?.data || err.message);
-        toast.error(`Error adding user: ${err.response?.data?.message || err.message}`);
+        console.error('Error in Booking:', err.response?.data || err.message);
+        toast.error(`Error in Booking: ${err.response?.data?.message || err.message}`);
       }
     } else {
       setErrors(validationErrors);

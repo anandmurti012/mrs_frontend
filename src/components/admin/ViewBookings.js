@@ -44,7 +44,7 @@ const ViewBookings = () => {
 
   const handleCancel = async (bookingId) => {
     try {
-      await axios.delete(`${process.env.REACT_APP_APIURL}/api/bookings/${bookingId}`);
+      await axios.put(`${process.env.REACT_APP_APIURL}/api/bookings/${bookingId}/toBeDeleted`);
       toast.success('Booking canceled successfully!');
       fetchBookings();
     } catch (error) {
@@ -55,7 +55,7 @@ const ViewBookings = () => {
   const fetchBookings = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${process.env.REACT_APP_APIURL}/api/users/`);
+      const res = await axios.get(`${process.env.REACT_APP_APIURL}/api/bookings/`);
       setBookings(res.data);
     } catch (error) {
       toast.error('Failed to load bookings');
@@ -85,11 +85,11 @@ const ViewBookings = () => {
         <div>Loading...</div>
       ) : (
         <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100vw', tableLayout: 'fixed' }}>
+          <table style={{ width: '90vw', tableLayout: 'fixed' }}>
             <thead>
               <tr>
-                <th style={{ width: '10%' }} data-title="Patient's Name">Name</th>
-                <th style={{ width: '5%' }} data-title="Age">Age</th>
+                <th style={{ width: '8%' }} data-title="Patient's Name">Name</th>
+                <th style={{ width: '3%' }} data-title="Age">Age</th>
                 <th style={{ width: '8%' }} data-title="Phone No.">Phone</th>
                 <th style={{ width: '10%' }} data-title="Email Address">Email</th>
                 <th style={{ width: '5%' }} data-title="Gender">Gender</th>
@@ -128,84 +128,84 @@ const ViewBookings = () => {
 
       {/* Popup for booking details */}
       {isPopupOpen && selectedBooking && (
-  <div className="modal fade bd-example-modal-lg show" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }} tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-    <div className="modal-dialog modal-lg">
-      <div className="modal-content">
-        <div className="modal-header">
-          <h5 className="modal-title" style={{ margin: 0 }}>Booking Details</h5>
-          <button
-            type="button"
-            className="close"
-            onClick={closePopup}
-            aria-label="Close"
-            style={{
-              marginLeft: 'auto',
-              width: '40px',
-              height: '40px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: '#0ccaf0',
-              border: 'none',
-              cursor: 'pointer'
-            }}>
-            <span aria-hidden="true" style={{ fontSize: '1.5rem' }}>&times;</span>
-          </button>
-        </div>
+        <div className="modal fade bd-example-modal-lg show" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }} tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+          <div className="modal-dialog modal-lg">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" style={{ margin: 0 }}>Booking Details</h5>
+                <button
+                  type="button"
+                  className="close"
+                  onClick={closePopup}
+                  aria-label="Close"
+                  style={{
+                    marginLeft: 'auto',
+                    width: '40px',
+                    height: '40px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: '#0ccaf0',
+                    border: 'none',
+                    cursor: 'pointer'
+                  }}>
+                  <span aria-hidden="true" style={{ fontSize: '1.5rem' }}>&times;</span>
+                </button>
+              </div>
 
-        <div className="modal-body">
-          <div className="container-fluid">
-            <div className="row mb-3 even-row">
-              <div className="col-md-5">
-                <strong>Name:</strong> {selectedBooking.name}
+              <div className="modal-body">
+                <div className="container-fluid">
+                  <div className="row mb-3 even-row">
+                    <div className="col-md-5">
+                      <strong>Name:</strong> {selectedBooking.name}
+                    </div>
+                    <div className="col-md-3">
+                      <strong>Gender:</strong> {selectedBooking.gender}
+                    </div>
+                    <div className="col-md-4">
+                      <strong>Age:</strong> {selectedBooking.age}
+                    </div>
+                  </div>
+                  <div className="row mb-3 odd-row">
+                    <div className="col-md-5">
+                      <strong>Email:</strong> {selectedBooking.email}
+                    </div>
+                    <div className="col-md-3">
+                      <strong>Phone:</strong> {selectedBooking.phone}
+                    </div>
+                    <div className="col-md-4">
+                      <strong>Doctor:</strong> {selectedBooking.doctor}
+                    </div>
+                    <div className="row odd-row">
+                      <div className="col-md-12 mt-3">
+                        <strong>Address:</strong> {selectedBooking.address}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row mb-3 even-row">
+                    <div className="col-md-3">
+                      <strong>Day:</strong> {selectedBooking.day || 'N/A'}
+                    </div>
+                    <div className="col-md-6">
+                      <strong>Appointment Schedule:</strong> {selectedBooking.timeSlot ? selectedBooking.timeSlot.split(' - ').map(time => formatTimeTo12Hour(time)).join(' - ') : 'N/A'}
+                    </div>
+                  </div>
+                  <div className="row odd-row">
+                    <div className="col-md-6">
+                      <strong>Booking Time:</strong> {formatTimestamp(selectedBooking.timeStamp)}
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="col-md-3">
-                <strong>Gender:</strong> {selectedBooking.gender}
-              </div>
-              <div className="col-md-4">
-                <strong>Age:</strong> {selectedBooking.age}
-              </div>
-            </div>
-            <div className="row mb-3 odd-row">
-              <div className="col-md-5">
-                <strong>Email:</strong> {selectedBooking.email}
-              </div>
-              <div className="col-md-3">
-                <strong>Phone:</strong> {selectedBooking.phone}
-              </div>
-              <div className="col-md-4">
-                <strong>Doctor:</strong> {selectedBooking.doctor}
-              </div>
-              <div className="row odd-row">
-              <div className="col-md-12 mt-3">
-                <strong>Address:</strong> { selectedBooking.address}
-              </div>
-            </div>
-            </div>
-            <div className="row mb-3 even-row">
-              <div className="col-md-3">
-                <strong>Day:</strong> {selectedBooking.day || 'N/A'}
-              </div>
-              <div className="col-md-6">
-                <strong>Appointment Schedule:</strong> {selectedBooking.timeSlot ? selectedBooking.timeSlot.split(' - ').map(time => formatTimeTo12Hour(time)).join(' - ') : 'N/A'}
-              </div>
-            </div>
-            <div className="row odd-row">
-              <div className="col-md-6">
-                <strong>Booking Time:</strong> {formatTimestamp(selectedBooking.timeStamp)}
+              <div className="modal-footer">
+                <button className="btn btn-success" onClick={() => handleConfirm(selectedBooking.bookingId)}>Confirm</button>
+                <button className="btn btn-danger" onClick={() => handleCancel(selectedBooking.bookingId)}>Cancel</button>
+                <button className="btn btn-info" onClick={closePopup}>Close</button>
               </div>
             </div>
           </div>
         </div>
-        <div className="modal-footer">
-          <button className="btn btn-success" onClick={() => handleConfirm(selectedBooking.id)}>Confirm</button>
-          <button className="btn btn-danger" onClick={() => handleCancel(selectedBooking.id)}>Cancel</button>
-          <button className="btn btn-info" onClick={closePopup}>Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
+      )}
 
     </div>
   );
