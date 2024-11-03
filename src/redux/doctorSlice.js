@@ -4,9 +4,10 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
     doctorName: '',
     bookingTime: '',
-    userName:',',
-    pAddress:'',
-    pPhone:'',
+    userName: ',',
+    pAddress: '',
+    pPhone: '',
+    token: ''
 };
 
 const doctorSlice = createSlice({
@@ -23,12 +24,15 @@ const doctorSlice = createSlice({
         clearDoctorDetails: (state) => {
             state.doctorName = '';
             state.bookingTime = '';
-            state.userName='';
-            state.pPhone='';
-            state.pAddress='';
+            state.userName = '';
+            state.pPhone = '';
+            state.pAddress = '';
+        },
+        setLoginData: (state, action) => {
+            state.token = action.payload.data.token;
         },
     },
 });
 
-export const { setDoctorDetails, clearDoctorDetails } = doctorSlice.actions;
+export const { setDoctorDetails, clearDoctorDetails,setLoginData } = doctorSlice.actions;
 export default doctorSlice.reducer;
