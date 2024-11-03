@@ -27,6 +27,7 @@ const UserForm = () => {
     adminName: 'vikash'
   });
 
+  console.log("form data::::",formData);
   const [errors, setErrors] = useState({});
   const [doctors, setDoctors] = useState([]);
   const [availability, setAvailability] = useState([]);
@@ -37,6 +38,7 @@ const UserForm = () => {
     const fetchDoctors = async () => {
       try {
         const response = await axios.get(`${process.env.REACT_APP_APIURL}/api/alldoctors`);
+        console.log("all doctors:::", response);
         setDoctors(response.data);
       } catch (error) {
         console.error('Error fetching doctors:', error);
@@ -77,6 +79,7 @@ const UserForm = () => {
     if (selectedDoctor) {
       try {
         const response = await axios.get(`${process.env.REACT_APP_APIURL}/api/doctorAvailability/${selectedDoctor}`);
+        console.log("response get aval. ::::", response);
         setAvailability(response.data.availability || []);
       } catch (error) {
         console.error('Error fetching doctor availability:', error);
