@@ -3,6 +3,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./ViewBookings.css"; // Add your CSS styles here
+import { useSelector } from 'react-redux';
 
 const ViewBookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -16,6 +17,8 @@ const ViewBookings = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [subscriptionType, setSubscriptionType] = useState("");
   const [status, setStatus] = useState("");
+  const auth = useSelector((state) => state.doctor);
+  const token = auth.token
 
   const formatTimeTo12Hour = (time) => {
     if (!time || typeof time !== "string") return "N/A";
@@ -67,7 +70,12 @@ const ViewBookings = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `${process.env.REACT_APP_APIURL}/api/bookings/?searchTerm=${searchTerm}&status=${status}`
+        `${process.env.REACT_APP_APIURL}/api/bookings/?searchTerm=${searchTerm}&status=${status}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      }
       );
       setBookings(res.data);
 

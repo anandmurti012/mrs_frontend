@@ -208,11 +208,23 @@ const ViewDoctors = () => {
   const saveDoctorChanges = async () => {
     try {
       console.log("doctorForm", doctorForm);
-      await axios.put(`${process.env.REACT_APP_APIURL}/api/doctors/${doctorForm.id}`, doctorForm);
+      await axios.patch(`${process.env.REACT_APP_APIURL}/api/update-doctors/`, { ...doctorForm, id: doctorForm.id },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'token'
+          }
+        }
+      );
+
+
+
+
       fetchDoctors();
       toast.success('Doctor details updated');
       closePopup();
     } catch (error) {
+      console.log(error)
       toast.error('Failed to update doctor');
     }
   };
