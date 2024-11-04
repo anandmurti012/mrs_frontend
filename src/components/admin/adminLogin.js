@@ -18,7 +18,7 @@ import {
 import { motion } from "framer-motion"; // Import motion for transition effects
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setLoginData } from "../../redux/doctorSlice";
 
 const MotionModalContent = motion(ModalContent); // Create a motion-enhanced ModalContent
@@ -48,12 +48,11 @@ function AdminLogin() {
             "Content-Type": "application/json",
           },
         },
-      ).then(response => {
+      ).then(async response => {
 
-        dispatch(setLoginData({
-          data: response.data
+        await dispatch(setLoginData({
+          token: response.data.token
         }))
-
 
         onClose(); // Close the modal after successful login
         setIsLoading(false); // Reset loading state

@@ -1,4 +1,4 @@
- import React, { useState } from 'react';
+import React, { useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -8,13 +8,14 @@ import AddAdmin from './addAdmin';
 import ViewBookings from './ViewBookings';
 import ViewDoctors from './ViewDoctors';
 import Confirmed from './Confirmed';
+import TopNav from '../TopNav';
 
 const AdminPanel = () => {
     const [activeTab, setActiveTab] = useState('Provisional Booking');
- 
-   
+
+
     // Logout function
-   
+
     // This function decides which component to render based on activeTab
     const renderContent = () => {
         switch (activeTab) {
@@ -34,12 +35,13 @@ const AdminPanel = () => {
     };
 
     return (
-        <div className="admin-dashboard">
+        <div style={{ display: 'flex' }}>
             {/* Wrap the top-right content in a div and style it */}
-            <aside className="sidebar">
+            <aside style={{ width: '20%', height: '100vh', padding: '10px 20px' }}>
                 <h3 style={{ color: 'grey', fontFamily: "'Aboreto', cursive" }}>
                     Dashboard
                 </h3>
+
                 <nav>
                     <ul>
                         <li className={activeTab === 'Provisional Booking' ? 'active' : ''} onClick={() => setActiveTab('Provisional Booking')}>
@@ -61,11 +63,13 @@ const AdminPanel = () => {
                 </nav>
             </aside>
 
-            <main className="content">
-                <div className="active-tab-heading">
-                    <h4>{activeTab}</h4>
+            <main style={{ width: '80%', height: '100vh', background: '#fff', overflow: 'auto' }}>
+                <TopNav activeTab={activeTab} />
+                
+                <div style={{ padding: '10px 20px 50px 20px' }} >
+                    {renderContent()}
                 </div>
-                {renderContent()}
+
             </main>
             <ToastContainer />
         </div>

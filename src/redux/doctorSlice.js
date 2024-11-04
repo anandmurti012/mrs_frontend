@@ -29,10 +29,13 @@ const doctorSlice = createSlice({
             state.pAddress = '';
         },
         setLoginData: (state, action) => {
-            state.token = action.payload.data.token;
+            state.token = action.payload.token;
+        },
+        LogoutAction: (state, action) => {
+            state.token = null;
         },
     },
 });
 
-export const { setDoctorDetails, clearDoctorDetails,setLoginData } = doctorSlice.actions;
+export const { setDoctorDetails, clearDoctorDetails, setLoginData,LogoutAction } = doctorSlice.actions;
 export default doctorSlice.reducer;

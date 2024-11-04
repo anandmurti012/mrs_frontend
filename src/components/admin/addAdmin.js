@@ -5,8 +5,14 @@ import * as Yup from 'yup';
 import { ToastContainer, toast } from 'react-toastify';
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // FontAwesome eye icons
 import 'react-toastify/dist/ReactToastify.css';
+import { useSelector } from 'react-redux';
 
 const AddAdmin = () => {
+
+    const auth = useSelector((state) => state.doctor);
+    const token = auth.token
+
+
     const [showPassCode, setShowPassCode] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -17,13 +23,17 @@ const AddAdmin = () => {
     const closePasscodeModal = () => setIsPasscodeModalOpen(false);
 
     const handlePasscodeSubmit = () => {
-        if (passcode === adminFormik.values.passCode) {
-            // Close modal and submit the form if passcode matches
-            closePasscodeModal();
-            adminFormik.handleSubmit();
-        } else {
-            toast.error('Invalid passcode');
-        }
+        closePasscodeModal();
+        adminFormik.handleSubmit();
+
+
+        // if (passcode === adminFormik.values.passCode) {
+        //     // Close modal and submit the form if passcode matches
+        //     closePasscodeModal();
+        //     adminFormik.handleSubmit();
+        // } else {
+        //     toast.error('Invalid passcode');
+        // }
     };
 
     const adminFormik = useFormik({
@@ -49,9 +59,18 @@ const AddAdmin = () => {
         }),
         onSubmit: async (values) => {
             try {
-                await axios.post(`${process.env.REACT_APP_APIURL}/api/admins/`, values);
-                toast.success('Admin added successfully!');
-                adminFormik.resetForm();
+                await axios.post(`${process.env.REACT_APP_APIURL}/api/admins/`, {values,adminPasscode:passcode}, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': token
+                    }
+                }).then(response => {
+                    toast.success('Admin added successfully!');
+                    adminFormik.resetForm();
+                }).catch(error => {
+                    toast.error(error.response.data.msg || error.message);
+                })
+
             } catch (error) {
                 toast.error('Error adding admin');
             }
