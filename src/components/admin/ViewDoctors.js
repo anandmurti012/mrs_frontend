@@ -173,14 +173,14 @@ const ViewDoctors = () => {
     fetchDoctors();
   }, []);
 
-  const fetchDoctors = async () => {
-    try {
-      const res = await axios.get(`${process.env.REACT_APP_APIURL}/api/doctors/`);
-      setDoctors(res.data);
-    } catch (error) {
-      toast.error('Failed to load doctors');
-    }
-  };
+  // const fetchDoctors = async () => {
+  //   try {
+  //     const res = await axios.get(`${process.env.REACT_APP_APIURL}/api/doctors/`);
+  //     setDoctors(res.data);
+  //   } catch (error) {
+  //     toast.error('Failed to load doctors');
+  //   }
+  // };
 
   const formatTimeTo12Hour = (time) => {
     if (!time) return '';
@@ -217,9 +217,6 @@ const ViewDoctors = () => {
         }
       );
 
-
-
-
       fetchDoctors();
       toast.success('Doctor details updated');
       closePopup();
@@ -229,26 +226,58 @@ const ViewDoctors = () => {
     }
   };
 
-  const deleteDoctor = async (id) => {
+  // const deleteDoctor = async (id) => {
+  //   try {
+  //     await axios.delete(`${process.env.REACT_APP_APIURL}/api/doctors/${id}`);
+  //     setDoctors(doctors.filter((doctor) => doctor.id !== id));
+  //     toast.success('Doctor deleted');
+  //   } catch (error) {
+  //     toast.error('Failed to delete doctor');
+  //   }
+  // };
+  const toggleDoctorStatus = async (doctor) => {
+    const updatedStatus = doctor.status === 'Active' ? 'Blocked' : 'Active';
     try {
-      await axios.delete(`${process.env.REACT_APP_APIURL}/api/doctors/${id}`);
-      setDoctors(doctors.filter((doctor) => doctor.id !== id));
-      toast.success('Doctor deleted');
+      await axios.patch(`${process.env.REACT_APP_APIURL}/api/update-doctor-status`, {
+        id: doctor.id,
+        status: updatedStatus,
+      });
+      // Refresh the doctor list after updating status
+      fetchDoctors();
+      toast.success(`Doctor ${updatedStatus}`);
     } catch (error) {
-      toast.error('Failed to delete doctor');
+      toast.error(`Failed to update status to ${updatedStatus}`);
     }
   };
+  
+  // Fetch active doctors only
+  const fetchDoctors = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_APIURL}/api/doctors`);
+      setDoctors(response.data); // Only active doctors will be set
+    } catch (error) {
+      console.error("Failed to fetch doctors:", error);
+    }
+  };
+  
+  // Call fetchDoctors initially to load doctors
+  useEffect(() => {
+    fetchDoctors();
+  }, []);
+  
+
 
   return (
     <div style={{ overflowX: 'auto' }}>
-      <table style={{ width: '100%', maxWidth: '100%', borderCollapse: 'collapse' }}>
+      <table style={{ width: '100%', maxWidth: '100%', borderCollapse: 'fixed' }}>
         <thead>
           <tr>
             <th style={{ width: '10%' }}>Name</th>
             <th style={{ width: '12%' }}>Specialization</th>
             <th style={{ width: '10%' }}>Phone No.</th>
-            <th style={{ width: '15%' }}>Address</th>
+            <th style={{ width: '10%' }}>Address</th>
             <th style={{ width: '10%' }}>Consultation Limit</th>
+            <th style={{ width: '10%' }}>Status</th>
             <th style={{ width: '10%' }}>Actions</th>
           </tr>
         </thead>
@@ -263,9 +292,15 @@ const ViewDoctors = () => {
                 <td>{doctor.phone}</td>
                 <td>{doctor.address}</td>
                 <td>{doctor.consultation || 'N/A'}</td>
+                <td>{doctor.status || 'Active'}</td>
                 <td>
                   <Button variant="warning" onClick={() => openEditPopup(doctor)}>Edit</Button>{' '}
-                  <Button variant="danger" onClick={() => deleteDoctor(doctor.id)}>Delete</Button>
+                  <Button
+                    variant={doctor.status === 'Active' ? 'danger' : 'secondary'}
+                    onClick={() => toggleDoctorStatus(doctor)}
+                  >
+                    {doctor.status === 'Active' ? 'Block' : 'Activate'}
+                  </Button>
                 </td>
               </tr>
             ))

@@ -5,6 +5,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import AdminPanel from './components/admin/AdminPanel';
 import { useSelector } from 'react-redux';
+import AdminLogin from './components/admin/adminLogin';
+import AdminForm from './components/admin/AdminForm';
 
 
 function App() {
@@ -17,11 +19,13 @@ function App() {
         isLoggedIn ?
           <Routes>
             <Route path="/" element={<AdminPanel />} />
+            <Route path="/adminForm" element={<AdminForm />} />
             <Route path="*" element={'404 Not Found'} />
           </Routes>
           :
           <Routes>
             <Route path="/" element={<UserForm />} />
+            <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="*" element={'404 Not Found'} />
           </Routes>
       }

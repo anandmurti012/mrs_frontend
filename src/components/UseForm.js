@@ -8,11 +8,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserDoctor, faUser, faAddressBook, faPhone, faEnvelope, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import './UseForm.css';
 import Footer from './users/Footer';
+import { useNavigate } from "react-router-dom";
 import AdminLogin from './admin/adminLogin';
 
 const UserForm = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { doctorName, bookingTime, userName, pAddress, pPhone } = useSelector((state) => state.doctor);
+  const handleAdminLoginClick = () => {
+    navigate("/admin-login"); // Replace '/admin-login' with the actual path to the login page
+  };
 
   const [formData, setFormData] = useState({
     name: '',
@@ -24,9 +29,9 @@ const UserForm = () => {
     doctor: '',
     day: '',
     timeSlot: [],
-    addedBy: 'user', // Set to 'user' by default
-    adminId: 8,
-    adminName: 'vikash'
+    addedBy: '', // Set to 'user' by default
+    adminId: '',
+    adminName: ''
   });
 
   // console.log("form data::::",formData);
@@ -35,6 +40,25 @@ const UserForm = () => {
   const [availability, setAvailability] = useState([]);
   const [timeSlots, setTimeSlots] = useState([]);
   const [admins, setAdmins] = useState([]); // To store admin data
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [countdown, setCountdown] = useState(10);
+
+  useEffect(() => {
+    let timer;
+    if (isFormSubmitted) {
+      timer = setInterval(() => {
+        setCountdown((prevCountdown) => {
+          if (prevCountdown <= 1) {
+            clearInterval(timer);
+            setIsFormSubmitted(false); // Return to form after countdown ends
+            return 10; // Reset countdown for future submissions
+          }
+          return prevCountdown - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [isFormSubmitted]);
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -126,18 +150,14 @@ const UserForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validateForm();
+
     if (Object.keys(validationErrors).length === 0) {
-      // const selectedAdmin = admins.find(admin => admin.id === formData.adminId) || {};
-      const selectedAdmin = [{ id: '8', name: 'vikash' }];
-      // console.log("selectedAdmin", selectedAdmin);
       const submissionData = {
         ...formData,
-        addedBy: 'user', // or set as 'admin' based on condition
-        adminId: 8,
-        adminName: 'vikash',
+        addedBy: 'user',
+        adminId: formData.adminId,
+        adminName: formData.adminName,
       };
-
-      // console.log("submissionData:::::",submissionData);
 
       try {
         const response = await axios.post(`${process.env.REACT_APP_APIURL}/api/bookings/`, submissionData);
@@ -148,14 +168,14 @@ const UserForm = () => {
             userName: formData.name,
             pAddress: formData.address,
             pPhone: formData.phone,
-            addedBy: 'user', // or set as 'admin' based on condition
-            adminId: 8,
-            adminName: 'vikash',
-
+            addedBy: 'user',
+            adminId: formData.adminId,
+            adminName: formData.adminName,
           }));
           toast.success('Booking done successfully!');
-          setFormData({ name: '', address: '', phone: '', email: '', gender: '', age: '', doctor: '', day: '', timeSlot: [], addedBy: 'user', adminId: 8, adminName: 'vikash' });
-          //  console.log("formData;;;;;", formData)
+          setIsFormSubmitted(true); // Show confirmation message
+          setCountdown(10); // Start countdown from 10 seconds
+          resetForm();
         } else {
           throw new Error('Unexpected response status');
         }
@@ -169,14 +189,32 @@ const UserForm = () => {
     }
   };
 
+
+  // Helper function to reset form fields selectively
+  const resetForm = () => {
+    setFormData({
+      ...formData,
+      name: '',
+      address: '',
+      phone: '',
+      email: '',
+      gender: '',
+      age: '',
+      doctor: '',
+      day: '',
+      timeSlot: [],
+    });
+  };
+
+
   return (
     <>
       <div className="d-flex align-items-center justify-content-between" style={{ margin: '20px' }}>
         {/* Logo */}
         <img
           style={{
-            height: '100px',
-            width: '100px',
+            height: '80px',
+            width: '80px',
             marginLeft: '20px',
           }}
           src="https://mrshospital.org/wp-content/uploads/2023/06/mrslogo-1.png"
@@ -199,8 +237,8 @@ const UserForm = () => {
       </div>
 
       <div className="form-container mt-3">
-        {doctorName && bookingTime ? (
-          <div className="booking-info card">
+        {isFormSubmitted ? (
+          <div className="card">
             <h3>
               <strong>Booking Confirmed</strong>
               <FontAwesomeIcon icon={faCircleCheck} className="confirmation-icon" />
@@ -210,92 +248,121 @@ const UserForm = () => {
             <p><b>Phone no:</b> {pPhone}</p>
             <p><b>Doctor's Name:</b> {doctorName}</p>
             <p><b>Consulting Time:</b> {bookingTime}</p>
-            <button onClick={() => window.location.reload()} className="submit-btn">Book Another Appointment</button>
+            <br />
+            <p style={{ fontSize: '20px' }}>
+              Returning to Booking form in <strong>{countdown}</strong> seconds...
+            </p>
           </div>
+
         ) : (
-          <form onSubmit={handleSubmit} className="user-form">
-            <h1 className="form-title"><FontAwesomeIcon icon={faUserDoctor} /> Book Your Appointment</h1>
-            <div className="form-group">
-              <label htmlFor="name"><p className='text-style'><FontAwesomeIcon icon={faUser} /> Name</p></label>
-              <input id="name" name="name" value={formData.name} onChange={handleChange} />
-              {errors.name && <span className="error-message">{errors.name}</span>}
+          <>
+            <div className="form-title-container">
+              <h1 className="form-title">
+                <FontAwesomeIcon icon={faUserDoctor} /> Book Your Appointment
+              </h1>
             </div>
-            <div className="form-group">
-              <label htmlFor="address"><p className='text-style'><FontAwesomeIcon icon={faAddressBook} /> Address</p></label>
-              <input id="address" name="address" value={formData.address} onChange={handleChange} />
-              {errors.address && <span className="error-message">{errors.address}</span>}
-            </div>
-            <div className="form-group">
-              <label htmlFor="phone"><p className='text-style'><FontAwesomeIcon icon={faPhone} /> Phone</p></label>
-              <input id="phone" name="phone" value={formData.phone} onChange={handleChange} />
-              {errors.phone && <span className="error-message">{errors.phone}</span>}
-            </div>
-            <div className="form-group">
-              <label htmlFor="email"><p className='text-style'><FontAwesomeIcon icon={faEnvelope} /> Email</p></label>
-              <input id="email" name="email" value={formData.email} onChange={handleChange} />
-              {errors.email && <span className="error-message">{errors.email}</span>}
-            </div>
-            <div className="form-group">
-              <label htmlFor="gender"><p className='text-style'>Gender</p></label>
-              <select id="gender" name="gender" value={formData.gender} onChange={handleChange}>
-                <option value="">Select Gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
-              {errors.gender && <span className="error-message">{errors.gender}</span>}
-            </div>
-            <div className="form-group">
-              <label htmlFor="age"><p className='text-style'>Age</p></label>
-              <input id="age" name="age" type="number" value={formData.age} onChange={handleChange} />
-              {errors.age && <span className="error-message">{errors.age}</span>}
-            </div>
-            <div className="form-group">
-              <label htmlFor="doctor">Doctor</label>
-              <select id="doctor" name="doctor" value={formData.doctor} onChange={handleDoctorChange}>
-                <option value="">Select Doctor</option>
-                {doctors.map((doctor, index) => (
-                  <option key={index} value={doctor.name}>
-                    {`${doctor.name} (${doctor.specialization})`}
-                  </option>
-                ))}
-              </select>
-              {errors.doctor && <span className="error-message">{errors.doctor}</span>}
-            </div>
-            <div className="form-group">
-              <label htmlFor="day">Day</label>
-              <select id="day" name="day" value={formData.day} onChange={handleDayChange}>
-                <option value="">Select Day</option>
-                {availability.map((slot, index) => (
-                  <option key={index} value={slot.day}>
-                    {slot.day}
-                  </option>
-                ))}
-              </select>
-              {errors.day && <span className="error-message">{errors.day}</span>}
-            </div>
-            <div className="form-group">
-              <label htmlFor="timeSlot">Time Slot</label>
-              <select id="timeSlot" name="timeSlot" value={formData.timeSlot} onChange={handleTimeSlotChange}>
-                <option value="">Select Time Slot</option>
-                {timeSlots.map((slot, index) => (
-                  <option key={index} value={`${slot.startTime} - ${slot.endTime}`}>
-                    {`${formatTimeTo12Hour(slot.startTime)} - ${formatTimeTo12Hour(slot.endTime)}`}
-                  </option>
-                ))}
-              </select>
-              {errors.timeSlot && <span className="error-message">{errors.timeSlot}</span>}
-            </div>
-            <button type="submit" className="submit-btn">Submit</button>
-            <ToastContainer />
-          </form>
+            <form onSubmit={handleSubmit} className="user-form">
+
+
+              <div className="form-column">
+                <div className="form-group">
+                  <label htmlFor="name"><span className='text-style'><FontAwesomeIcon icon={faUser} /> &nbsp;&nbsp;Name</span></label>
+                  <input id="name" name="name" value={formData.name} onChange={handleChange} placeholder='Enter You Name' />
+                  {errors.name && <span className="error-message">{errors.name}</span>}
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="address"><span className='text-style'><FontAwesomeIcon icon={faAddressBook} /> &nbsp;&nbsp;Address</span></label>
+                  <input id="address" placeholder='Enter Your Address' name="address" value={formData.address} onChange={handleChange} />
+                  {errors.address && <span className="error-message">{errors.address}</span>}
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="phone"><span className='text-style'><FontAwesomeIcon icon={faPhone} />&nbsp;&nbsp; Phone</span></label>
+                  <input id="phone" name="phone" placeholder='Enter your valid Contact Number' value={formData.phone} onChange={handleChange} />
+                  {errors.phone && <span className="error-message">{errors.phone}</span>}
+                </div>
+              </div>
+
+              <div className="form-column">
+                <div className="form-group">
+                  <label htmlFor="email"><span className='text-style'><FontAwesomeIcon icon={faEnvelope} /> &nbsp;&nbsp;Email</span></label>
+                  <input id="email" name="email" value={formData.email} placeholder='Enter your Email' onChange={handleChange} />
+                  {errors.email && <span className="error-message">{errors.email}</span>}
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="gender"><span className='text-style'><FontAwesomeIcon icon={faUser} />&nbsp;&nbsp;Gender</span></label>
+                  <select id="gender" name="gender" value={formData.gender} onChange={handleChange}>
+                    <option value="">Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                  {errors.gender && <span className="error-message">{errors.gender}</span>}
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="age"><span className='text-style'>Age</span></label>
+                  <input id="age" name="age" placeholder='Enter your age' type="number" value={formData.age} onChange={handleChange} />
+                  {errors.age && <span className="error-message">{errors.age}</span>}
+                </div>
+              </div>
+
+              <div className="form-column">
+                <div className="form-group">
+                  <label htmlFor="doctor"><span className='text-style'>Doctor</span></label>
+                  <select id="doctor" name="doctor" value={formData.doctor} onChange={handleDoctorChange}>
+                    <option value="">Select Doctor</option>
+                    {doctors.map((doctor, index) => (
+                      <option key={index} value={doctor.name}>
+                        {`${doctor.name} (${doctor.specialization})`}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.doctor && <span className="error-message">{errors.doctor}</span>}
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="day"><span className='text-style'>Day</span></label>
+                  <select id="day" name="day" value={formData.day} onChange={handleDayChange}>
+                    <option value="">Select Day</option>
+                    {availability.map((slot, index) => (
+                      <option key={index} value={slot.day}>
+                        {slot.day}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.day && <span className="error-message">{errors.day}</span>}
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="timeSlot"><span className='text-style'>Time Slot</span></label>
+                  <select id="timeSlot" name="timeSlot" value={formData.timeSlot} onChange={handleTimeSlotChange}>
+                    <option value="">Select Time Slot</option>
+                    {timeSlots.map((slot, index) => (
+                      <option key={index} value={`${slot.startTime} - ${slot.endTime}`}>
+                        {`${formatTimeTo12Hour(slot.startTime)} - ${formatTimeTo12Hour(slot.endTime)}`}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.timeSlot && <span className="error-message">{errors.timeSlot}</span>}
+                </div>
+                <button type="submit" className="submit-btn">Submit</button>
+              </div>
+
+              <ToastContainer />
+            </form>
+          </>
+
         )}
       </div>
       {/* Admin login section for '/' */}
-      <div>
-        <div className="mt-3 loginPosition">
-          <AdminLogin />
-        </div>
+      <div className="mt-3 loginPosition">
+        <button className="btn btn-primary" onClick={handleAdminLoginClick}>
+          Admin Login
+          {/* <AdminLogin /> */}
+        </button>
       </div>
 
       <Footer />

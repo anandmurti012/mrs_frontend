@@ -4,8 +4,12 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./ViewBookings.css"; // Add your CSS styles here
 import { useSelector } from 'react-redux';
+import { Button, InputGroup } from 'react-bootstrap';
+import dayjs from 'dayjs';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 
-const ViewBookings = () => {
+const ViewBookings = ({ fetchAppointments }) => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedBooking, setSelectedBooking] = useState(null);
@@ -15,10 +19,23 @@ const ViewBookings = () => {
   const [actionType, setActionType] = useState(""); // "confirm" or "cancel"
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [subscriptionType, setSubscriptionType] = useState("");
+  const [searchDoctorTerm, setSearchDoctorTerm] = useState("");
   const [status, setStatus] = useState("");
   const auth = useSelector((state) => state.doctor);
+  const [selectedDate, setSelectedDate] = useState(null);
   const token = auth.token
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+
+  const handleFetch = () => {
+    if (selectedDate) {
+      const formattedDate = dayjs(selectedDate).format('YYYY-MM-DD');
+      fetchAppointments(formattedDate);  // This will now call the parent function?
+    }
+  };
+
 
   const formatTimeTo12Hour = (time) => {
     if (!time || typeof time !== "string") return "N/A";
@@ -60,7 +77,7 @@ const ViewBookings = () => {
         `${process.env.REACT_APP_APIURL}/api/bookings/${bookingId}/toBeDeleted`
       );
       toast.success("Booking canceled successfully!");
-      fetchBookings(searchTerm, status);
+      fetchBookings(searchTerm, status, selectedDate, status);
     } catch (error) {
       toast.error("Error canceling booking");
     }
@@ -70,7 +87,7 @@ const ViewBookings = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `${process.env.REACT_APP_APIURL}/api/bookings/?searchTerm=${searchTerm}&status=${status}`, {
+        `${process.env.REACT_APP_APIURL}/api/bookings/?searchTerm=${searchTerm}&status=${status}&searchDoctorTerm=${searchDoctorTerm}&selectedDate=${selectedDate}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': token
@@ -86,8 +103,8 @@ const ViewBookings = () => {
   };
 
   useEffect(() => {
-    fetchBookings(searchTerm, status);
-  }, [searchTerm, status]);
+    fetchBookings(searchTerm, searchDoctorTerm, selectedDate, status);
+  }, [searchTerm, searchDoctorTerm, selectedDate, status]);
 
   const openPopup = (booking) => {
     setSelectedBooking(booking);
@@ -109,7 +126,7 @@ const ViewBookings = () => {
   };
 
   const handlePasscodeSubmit = () => {
-    if (passcode === "1234") {
+    if (passcode === "0000") {
       // Replace '1234' with the actual passcode
       if (actionType === "confirm") {
         handleConfirm(selectedBooking.bookingId);
@@ -133,12 +150,19 @@ const ViewBookings = () => {
     return () => {
       clearTimeout(handler);
     };
-  }, [searchTerm, subscriptionType, status]);
+  }, [searchTerm, searchDoctorTerm, selectedDate, status]);
 
   const searchInput = (e) => {
     setSearchTerm(e.target.value);
     // console.log(e.target.value)
   };
+  const searchDoctorInput = (e) => {
+    setSearchDoctorTerm(e.target.value);
+    // console.log(e.target.value)
+  };
+  // const handleDateChange = (date) => {
+  //   setSelectedDate(date);
+  // };
   const handleStatusChange = (e) => {
     setStatus(e.target.value);
   };
@@ -186,6 +210,26 @@ const ViewBookings = () => {
               <option value={'Confirmed'}>Confirmed</option>
               <option value={'Cancelled'}>Cancelled</option>
             </select>
+          </div>
+          <div className="col-sm-12 col-lg-3 mb-2 ms-3">
+            <input
+              type="search"
+              onChange={searchDoctorInput}
+              placeholder="Search By Doctor's name"
+              className="form-control"
+            />
+          </div>
+          <div>
+            <InputGroup className="mb-2 ms-3">
+              <DatePicker
+                selected={selectedDate}
+                onChange={handleDateChange}
+                dateFormat="YYYY-MM-dd" // Display date only
+                className="form-control"
+                placeholderText="Select Date"
+              />
+            </InputGroup>
+        
           </div>
         </div>
 

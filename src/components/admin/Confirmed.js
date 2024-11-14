@@ -5,12 +5,15 @@ import 'react-toastify/dist/ReactToastify.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleCheck,faCancel } from '@fortawesome/free-solid-svg-icons';
 import './ViewBookings.css'; // Add your CSS styles here
+import { useSelector } from 'react-redux';
 
 const ConfirmedBooking = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const auth = useSelector((state) => state.doctor);
+  const token = auth.token
 
   const formatTimeTo12Hour = (time) => {
     if (!time || typeof time !== 'string') return 'N/A';
@@ -39,14 +42,20 @@ const ConfirmedBooking = () => {
   const fetchBookings = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${process.env.REACT_APP_APIURL}/api/bookings/`);
-      setBookings(res.data);
+        const res = await axios.get(`${process.env.REACT_APP_APIURL}/api/bookings/`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token
+            }
+        });
+        setBookings(res.data);
     } catch (error) {
-      toast.error('Failed to load bookings');
+        toast.error('Failed to load bookings');
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
+
 
   useEffect(() => {
     fetchBookings();

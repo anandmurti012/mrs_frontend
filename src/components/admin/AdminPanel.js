@@ -12,6 +12,7 @@ import TopNav from '../TopNav';
 
 const AdminPanel = () => {
     const [activeTab, setActiveTab] = useState('Provisional Booking');
+    
 
 
     // Logout function
@@ -38,11 +39,11 @@ const AdminPanel = () => {
         <div style={{ display: 'flex' }}>
             {/* Wrap the top-right content in a div and style it */}
             <aside style={{ width: '20%', height: '100vh', padding: '10px 20px' }}>
-                <h3 style={{ color: 'grey', fontFamily: "'Aboreto', cursive" }}>
+                <h3 style={{ color: 'white', fontFamily: "'Aboreto', cursive" }}>
                     Dashboard
                 </h3>
 
-                <nav>
+                <nav style={{marginTop:'20px'}}>
                     <ul>
                         <li className={activeTab === 'Provisional Booking' ? 'active' : ''} onClick={() => setActiveTab('Provisional Booking')}>
                             Provisional Booking

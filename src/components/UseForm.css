@@ -1,109 +1,132 @@
 /* Form Container */
 body{
-  background-image: url("https://media.istockphoto.com/id/1303165303/photo/defocused-view-on-hospital-room-with-patient-and-doctor-examining-data.webp?s=1024x1024&w=is&k=20&c=bqtFGndZZ45P4S7wWTs6JN1SdiDTkLku90bbZgAb_7U=");
+  background-image: url("https://t3.ftcdn.net/jpg/09/32/26/74/360_F_932267458_Zqtzmc9EIfMjenziYeSO5FLwC8ryfhHy.jpg");
 background-repeat: no-repeat;
 background-size: cover;
   font-family: 'Aboreto', cursive;
 }
-.form-container {
-  width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
-  background-color: #f9f9f9;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-.text-style{
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 1px;
-}
-/* Form Title */
-.form-title {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 24px;
-  color: #333;
-}
-
-/* Form */
+ 
 .user-form {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f4f7fc;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Form Group */
-.form-group {
-  margin-bottom: 15px;
+.form-title-container {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
-.booking-info.card {
-  background-color: transparent; /* Remove white background */
-  border: none; /* Remove thick border */
-  box-shadow: none; /* Remove any box-shadow, if present */
-  padding: 20px; /* Add padding if you want some space inside the card */
-  border-radius: 8px; /* Optional: Add rounded corners */
-  margin: 10px; /* Optional: Add some margin around the card */
-  color: #333; /* Optional: Set a default text color */
+
+.form-title {
+  font-size: 24px;
+  color: #029468;
+  font-weight: bold;
+}
+
+.form-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px; /* Controls the gap between label and input */
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 3px; /* Reduces extra space under the label */
+}
+
+.text-style {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  color: #555;
+}
+
+.form-group input,
+.form-group select {
+  padding: 8px; /* Slightly reduces padding for a compact look */
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.error-message {
+  color: red;
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+.submit-btn {
+  grid-column: span 3;
+  background-color: #3182ce;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+  margin-top: 20px;
+}
+
+.submit-btn:hover {
+  background-color: #2b6cb0;
+}
+ 
+.card {
+  max-width: 500px;
+  margin-left: 500px;
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-align: center;
+}
+
+.card h3 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .confirmation-icon {
-  margin-left: 10px; /* Space between text and icon */
-  color: green; /* Change color of the confirmation icon */
+  color: #28a745;
+  margin-left: 8px;
 }
 
-.submit-btn {
-  background-color: #007bff; /* Button color */
-  color: white; /* Button text color */
-  border: none; /* Remove button border */
-  padding: 10px 20px; /* Button padding */
-  border-radius: 5px; /* Rounded corners for button */
-  cursor: pointer; /* Pointer cursor on hover */
-  transition: background-color 0.3s; /* Smooth transition for background color */
-}
-
-.submit-btn:hover {
-  background-color: #0056b3; /* Darker color on hover */
-}
-
-/* Form Label */
-.form-group label {
-  font-size: 14px;
-  margin-bottom: 5px;
-  color: #333;
-  display: block;
-}
-
-/* Input Fields */
-.form-group input,
-.form-group select {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-  box-sizing: border-box;
-  background-color: #fff;
-}
-
-/* Error Message */
-.error-message {
-  color: #e74c3c;
-  font-size: 12px;
-  margin-top: 5px;
-}
-
-/* Submit Button */
-.submit-btn {
-  background-color: #3498db;
-  color: #fff;
-  padding: 12px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+.card h4,
+.card p {
   font-size: 16px;
+  color: #555;
+  margin: 5px 0;
 }
 
-.submit-btn:hover {
-  background-color: #2980b9;
+.card p:last-of-type {
+  font-size: 20px;
+  margin-top: 15px;
+}
+
+.card strong {
+  color: #333;
 }
