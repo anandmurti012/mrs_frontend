@@ -309,7 +309,7 @@ const ViewBookings = ({ fetchAppointments }) => {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title" style={{ margin: 0 }}>
-                  Booking Details
+                  Booking Id: <strong>{selectedBooking.bookingId}</strong>
                 </h5>
                 <button
                   type="button"
@@ -382,7 +382,7 @@ const ViewBookings = ({ fetchAppointments }) => {
                       <strong>Booking Time:</strong>{" "}
                       {formatTimestamp(selectedBooking.timeStamp)}
                     </div>
-                  </div>
+                  </div>                  
                 </div>
               </div>
               <div className="modal-footer">
