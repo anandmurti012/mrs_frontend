@@ -11,6 +11,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const ViewBookings = ({ fetchAppointments }) => {
   const [bookings, setBookings] = useState([]);
+  const [doctors, setDoctors] = useState([]); // To store available doctors
   const [loading, setLoading] = useState(true);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -19,9 +20,11 @@ const ViewBookings = ({ fetchAppointments }) => {
   const [actionType, setActionType] = useState(""); // "confirm" or "cancel"
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchDoctorTerm, setSearchDoctorTerm] = useState("");
+  // const [searchDoctorTerm, setSearchDoctorTerm] = useState("");
+  const [selectedDoctor, setSelectedDoctor] = useState(""); // To store selected doctor
   const [status, setStatus] = useState("");
   const auth = useSelector((state) => state.doctor);
+  console.log("auth::::", auth);
   const [selectedDate, setSelectedDate] = useState(null);
   const token = auth.token
 
@@ -83,11 +86,25 @@ const ViewBookings = ({ fetchAppointments }) => {
     }
   };
 
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_APIURL}/api/doctors`); // Adjust API endpoint
+        console.log("response:::: doctors list", response);
+        setDoctors(response.data);
+      } catch (error) {
+        console.error("Error fetching doctors:", error);
+      }
+    };
+
+    fetchDoctors();
+  }, []);
+
   const fetchBookings = async () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `${process.env.REACT_APP_APIURL}/api/bookings/?searchTerm=${searchTerm}&status=${status}&searchDoctorTerm=${searchDoctorTerm}&selectedDate=${selectedDate}`, {
+        `${process.env.REACT_APP_APIURL}/api/bookings/?searchTerm=${searchTerm}&status=${status}&selectedDate=${selectedDate}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': token
@@ -103,8 +120,8 @@ const ViewBookings = ({ fetchAppointments }) => {
   };
 
   useEffect(() => {
-    fetchBookings(searchTerm, searchDoctorTerm, selectedDate, status);
-  }, [searchTerm, searchDoctorTerm, selectedDate, status]);
+    fetchBookings(searchTerm, selectedDate, status);
+  }, [searchTerm, selectedDate, status]);
 
   const openPopup = (booking) => {
     setSelectedBooking(booking);
@@ -150,16 +167,16 @@ const ViewBookings = ({ fetchAppointments }) => {
     return () => {
       clearTimeout(handler);
     };
-  }, [searchTerm, searchDoctorTerm, selectedDate, status]);
+  }, [searchTerm, selectedDate, status]);
 
   const searchInput = (e) => {
     setSearchTerm(e.target.value);
     // console.log(e.target.value)
   };
-  const searchDoctorInput = (e) => {
-    setSearchDoctorTerm(e.target.value);
-    // console.log(e.target.value)
-  };
+  // const searchDoctorInput = (e) => {
+  //   setSearchDoctorTerm(e.target.value);
+  //   // console.log(e.target.value)
+  // };
   // const handleDateChange = (date) => {
   //   setSelectedDate(date);
   // };
@@ -202,7 +219,7 @@ const ViewBookings = ({ fetchAppointments }) => {
             />
           </div>
 
-          <div className="col-sm-12 col-lg-3 mb-2 ms-3">
+          {/*     <div className="col-sm-12 col-lg-3 mb-2 ms-3">
             <select className="form-select" onChange={handleStatusChange}>
               <option value="" style={{ background: "#eee" }}>
                 Status
@@ -210,14 +227,29 @@ const ViewBookings = ({ fetchAppointments }) => {
               <option value={'Confirmed'}>Confirmed</option>
               <option value={'Cancelled'}>Cancelled</option>
             </select>
-          </div>
-          <div className="col-sm-12 col-lg-3 mb-2 ms-3">
+          </div>  */}
+
+          {/* <div className="col-sm-12 col-lg-3 mb-2 ms-3">
             <input
               type="search"
               onChange={searchDoctorInput}
               placeholder="Search By Doctor's name"
               className="form-control"
             />
+          </div> */}
+          <div className="col-sm-12 col-lg-3 mb-2 ms-3">
+            <select
+              onChange={(e) => setSelectedDoctor(e.target.value)}
+              className="form-control"
+              value={selectedDoctor}
+            >
+              <option value="">Select Doctor</option>
+              {doctors.map((doctor) => (
+                <option key={doctor.id} value={doctor.name}>
+                  {doctor.name}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
             <InputGroup className="mb-2 ms-3">
@@ -229,7 +261,7 @@ const ViewBookings = ({ fetchAppointments }) => {
                 placeholderText="Select Date"
               />
             </InputGroup>
-        
+
           </div>
         </div>
 
@@ -382,7 +414,7 @@ const ViewBookings = ({ fetchAppointments }) => {
                       <strong>Booking Time:</strong>{" "}
                       {formatTimestamp(selectedBooking.timeStamp)}
                     </div>
-                  </div>                  
+                  </div>
                 </div>
               </div>
               <div className="modal-footer">
