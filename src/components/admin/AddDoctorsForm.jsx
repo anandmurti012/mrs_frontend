@@ -11,20 +11,20 @@ const AddDoctorsForm = () => {
     const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const [isPasscodeModalOpen, setIsPasscodeModalOpen] = useState(false);
     const [passcode, setPasscode] = useState('');
-  
+
     const openPasscodeModal = () => setIsPasscodeModalOpen(true);
     const closePasscodeModal = () => setIsPasscodeModalOpen(false);
-  
+
     const handlePasscodeSubmit = () => {
-      if (passcode === '0000') {
-        // Close modal and submit the form if passcode matches
-        closePasscodeModal();
-        formik.handleSubmit();
-      } else {
-        toast.error('Invalid passcode');
-      }
+        if (passcode === '0000') {
+            // Close modal and submit the form if passcode matches
+            closePasscodeModal();
+            formik.handleSubmit();
+        } else {
+            toast.error('Invalid passcode');
+        }
     };
-  
+
 
     // Handle changes to time slots
     const handleAvailabilityChange = (day, index, field, value) => {
@@ -45,7 +45,7 @@ const AddDoctorsForm = () => {
     //     setAvailability(updatedAvailability);
     // };
     // Formik for form handling
-    
+
     const formik = useFormik({
         initialValues: {
             name: '',
@@ -108,7 +108,7 @@ const AddDoctorsForm = () => {
 
     return (
         <div>
-         
+
             <form className="doctor-form" onSubmit={formik.handleSubmit}>
                 <div className="form-group">
                     <label>Doctor's Name:</label>
@@ -154,7 +154,7 @@ const AddDoctorsForm = () => {
                         <span className="error">{formik.errors.phone}</span>
                     )}
                 </div>
-                
+
                 <div className="form-group">
                     <label>Address</label>
                     <input
@@ -255,62 +255,70 @@ const AddDoctorsForm = () => {
                 <button type="button" onClick={openPasscodeModal}>Add Doctor</button>
             </form>
             {/* Passcode Modal */}
-      {isPasscodeModalOpen && (
-        <div
-          className="modal fade show"
-          style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-          tabIndex="-1"
-          role="dialog"
-          aria-labelledby="passcodeModalLabel"
-          aria-hidden="true"
-        >
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Enter Passcode</h5>
-                <button
-                  type="button"
-                  className="close"
-                  onClick={closePasscodeModal}
-                  aria-label="Close"
-                  style={{
-                    marginLeft: "auto",
-                    width: "40px",
-                    height: "40px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    background: "#0ccaf0",
-                    border: "none",
-                    cursor: "pointer",
-                  }}
+            {isPasscodeModalOpen && (
+                <div
+                    className="modal fade show"
+                    style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+                    tabIndex="-1"
+                    role="dialog"
+                    aria-labelledby="passcodeModalLabel"
+                    aria-hidden="true"
                 >
-                  <span aria-hidden="true" style={{ fontSize: "1.5rem" }}>
-                    &times;
-                  </span>
-                </button>
-              </div>
-              <div className="modal-body">
-                <input
-                  type="password"
-                  value={passcode}
-                  onChange={(e) => setPasscode(e.target.value)}
-                  placeholder="Enter passcode"
-                  className="form-control"
-                />
-              </div>
-              <div className="modal-footer">
-                <button className="btn btn-primary" onClick={handlePasscodeSubmit}>
-                  Submit
-                </button>
-                <button className="btn btn-secondary" onClick={closePasscodeModal}>
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+                    <div
+                        className="modal-dialog"
+                        style={{
+                            maxWidth: "15%", // Reduce the modal's width to 50%
+                            margin: "1.75rem auto", // Center align
+                            marginTop: '200px'
+                        }}
+                    >
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Enter Passcode</h5>
+                                <button
+                                    type="button"
+                                    className="close"
+                                    onClick={closePasscodeModal}
+                                    aria-label="Close"
+                                    style={{
+                                        marginLeft: "auto",
+                                        width: "40px",
+                                        height: "40px",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        background: "#0ccaf0",
+                                        border: "none",
+                                        cursor: "pointer",
+                                    }}
+                                >
+                                    <span aria-hidden="true" style={{ fontSize: "1.5rem" }}>
+                                        &times;
+                                    </span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <input
+                                    type="password"
+                                    value={passcode}
+                                    onChange={(e) => setPasscode(e.target.value)}
+                                    placeholder="Enter passcode"
+                                    className="form-control"
+                                />
+                            </div>
+                            <div className="modal-footer">
+                                <button className="btn btn-primary" onClick={handlePasscodeSubmit}>
+                                    Submit
+                                </button>
+                                <button className="btn btn-secondary" onClick={closePasscodeModal}>
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <ToastContainer />
         </div>
     );

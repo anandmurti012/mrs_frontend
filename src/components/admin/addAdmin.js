@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // FontAwesome eye icons
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from 'react-redux';
+import './addAdmin.css';
 
 const AddAdmin = () => {
 
@@ -199,61 +200,71 @@ const AddAdmin = () => {
             </form>
             {/* Passcode Modal */}
             {isPasscodeModalOpen && (
-                <div
-                    className="modal fade show"
-                    style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-                    tabIndex="-1"
-                    role="dialog"
-                    aria-labelledby="passcodeModalLabel"
-                    aria-hidden="true"
-                >
-                    <div className="modal-dialog">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Enter Passcode</h5>
-                                <button
-                                    type="button"
-                                    className="close"
-                                    onClick={closePasscodeModal}
-                                    aria-label="Close"
-                                    style={{
-                                        marginLeft: "auto",
-                                        width: "40px",
-                                        height: "40px",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        background: "#0ccaf0",
-                                        border: "none",
-                                        cursor: "pointer",
-                                    }}
-                                >
-                                    <span aria-hidden="true" style={{ fontSize: "1.5rem" }}>
-                                        &times;
-                                    </span>
-                                </button>
-                            </div>
-                            <div className="modal-body">
-                                <input
-                                    type="password"
-                                    value={passcode}
-                                    onChange={(e) => setPasscode(e.target.value)}
-                                    placeholder="Enter passcode"
-                                    className="form-control"
-                                />
-                            </div>
-                            <div className="modal-footer">
-                                <button className="btn btn-primary" onClick={handlePasscodeSubmit}>
-                                    Submit
-                                </button>
-                                <button className="btn btn-secondary" onClick={closePasscodeModal}>
-                                    Cancel
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+  <div
+    className="modal fade show"
+    style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+    tabIndex="-1"
+    role="dialog"
+    aria-labelledby="passcodeModalLabel"
+    aria-hidden="true"
+  >
+    <div
+      className="modal-dialog"
+      style={{
+        maxWidth: "15%", // Default width on larger screens
+        margin: "1.75rem auto", // Center the modal horizontally
+        marginTop: "200px", // Adds margin from the top of the page
+      }}
+    >
+      <div className="modal-content">
+        <div className="modal-header">
+          <h5 className="modal-title">Enter Passcode</h5>
+          <button
+            type="button"
+            className="close"
+            onClick={closePasscodeModal}
+            aria-label="Close"
+            style={{
+              marginLeft: "auto",
+              width: "40px",
+              height: "40px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "#0ccaf0",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            <span aria-hidden="true" style={{ fontSize: "1.5rem" }}>
+              &times;
+            </span>
+          </button>
+        </div>
+        <div className="modal-body">
+          <input
+            type="password"
+            value={passcode}
+            onChange={(e) => setPasscode(e.target.value)}
+            placeholder="Enter passcode"
+            className="form-control"
+          />
+        </div>
+        <div className="modal-footer">
+          <button className="btn btn-primary" onClick={handlePasscodeSubmit}>
+            Submit
+          </button>
+          <button className="btn btn-secondary" onClick={closePasscodeModal}>
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+
+
         </div>
     )
 }

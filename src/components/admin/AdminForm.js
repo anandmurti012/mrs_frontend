@@ -542,7 +542,7 @@ const UserForm = () => {
               <div className="form-column">
                 <div className="form-group">
                   <label htmlFor="name"><span className='text-style'><FontAwesomeIcon icon={faUser} /> &nbsp;&nbsp;Name</span></label>
-                  <input id="name" name="name" value={formData.name} onChange={handleChange} placeholder='Enter You Name' />
+                  <input id="name" name="name" value={formData.name} onChange={handleChange} placeholder='Enter Your Name' />
                   {errors.name && <span className="error-message">{errors.name}</span>}
                 </div>
 

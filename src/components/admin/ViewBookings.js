@@ -16,8 +16,8 @@ const ViewBookings = ({ fetchAppointments }) => {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isPasscodeModalOpen, setIsPasscodeModalOpen] = useState(false);
-  const [passcode, setPasscode] = useState("");
   const [actionType, setActionType] = useState(""); // "confirm" or "cancel"
+  const [passcode, setPasscode] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   // const [searchDoctorTerm, setSearchDoctorTerm] = useState("");
@@ -74,17 +74,17 @@ const ViewBookings = ({ fetchAppointments }) => {
     }
   };
 
-  const handleCancel = async (bookingId) => {
-    try {
-      await axios.put(
-        `${process.env.REACT_APP_APIURL}/api/bookings/${bookingId}/toBeDeleted`
-      );
-      toast.success("Booking canceled successfully!");
-      fetchBookings(searchTerm, status, selectedDate, status);
-    } catch (error) {
-      toast.error("Error canceling booking");
-    }
-  };
+  // const handleCancel = async (bookingId) => {
+  //   try {
+  //     await axios.put(
+  //       `${process.env.REACT_APP_APIURL}/api/bookings/${bookingId}/toBeDeleted`
+  //     );
+  //     toast.success("Booking canceled successfully!");
+  //     fetchBookings(searchTerm, status, selectedDate, status);
+  //   } catch (error) {
+  //     toast.error("Error canceling booking");
+  //   }
+  // };
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -105,19 +105,23 @@ const ViewBookings = ({ fetchAppointments }) => {
       setLoading(true);
       const res = await axios.get(
         `${process.env.REACT_APP_APIURL}/api/bookings/?searchTerm=${searchTerm}&status=${status}&selectedDate=${selectedDate}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': token
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+          }
         }
-      }
       );
-      setBookings(res.data);
-
+      
+      // Sort bookings by createdAt or bookingDate in descending order to get latest on top
+      const sortedBookings = res.data.sort((a, b) => new Date(b.timeStamp) - new Date(a.timeStamp));
+      // console.log("sorted:::", sortedBookings);
+      setBookings(sortedBookings); // Set the sorted bookings
     } catch (error) {
       toast.error("Failed to load bookings");
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchBookings(searchTerm, selectedDate, status);
@@ -147,8 +151,6 @@ const ViewBookings = ({ fetchAppointments }) => {
       // Replace '1234' with the actual passcode
       if (actionType === "confirm") {
         handleConfirm(selectedBooking.bookingId);
-      } else if (actionType === "cancel") {
-        handleCancel(selectedBooking.bookingId);
       }
       closePasscodeModal();
       closePopup();
@@ -271,7 +273,7 @@ const ViewBookings = ({ fetchAppointments }) => {
               <th style={{ width: "8%" }} data-title="Patient's Name">
                 Name
               </th>
-              <th style={{ width: "3%" }} data-title="Age">
+              <th style={{ width: "5%" }} data-title="Age">
                 Age
               </th>
               <th style={{ width: "8%" }} data-title="Phone No.">
@@ -286,10 +288,10 @@ const ViewBookings = ({ fetchAppointments }) => {
               <th style={{ width: "10%" }} data-title="Assigned Doctor">
                 Doctor
               </th>
-              <th style={{ width: "5%" }} data-title="Selected Day">
+              <th style={{ width: "7%" }} data-title="Selected Day">
                 Day
               </th>
-              <th style={{ width: "8%" }} data-title="Time Slot">
+              <th style={{ width: "10%" }} data-title="Time Slot">
                 Appointment
               </th>
             </tr>
@@ -424,12 +426,9 @@ const ViewBookings = ({ fetchAppointments }) => {
                 >
                   Confirm
                 </button>
-                <button
-                  className="btn btn-danger"
-                  onClick={() => openPasscodeModal("cancel")}
-                >
+                {/* <button className="btn btn-danger"onClick={() => openPasscodeModal("cancel")}>
                   Cancel
-                </button>
+                </button> */}
                 <button className="btn btn-info" onClick={closePopup}>
                   Close
                 </button>
@@ -448,8 +447,17 @@ const ViewBookings = ({ fetchAppointments }) => {
           role="dialog"
           aria-labelledby="passcodeModalLabel"
           aria-hidden="true"
+
         >
-          <div className="modal-dialog">
+          <div
+            className="modal-dialog"
+            style={{
+              width: "30%", // Set the width to 50% of its container
+              maxWidth: "250px", // Optional: Set a max width for responsiveness
+              margin: "auto", // Center the modal horizontally
+              marginTop: '100px'
+            }}
+          >
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Enter Passcode</h5>
@@ -485,21 +493,16 @@ const ViewBookings = ({ fetchAppointments }) => {
                 />
               </div>
               <div className="modal-footer">
-                <button
-                  className="btn btn-primary"
-                  onClick={handlePasscodeSubmit}
-                >
+                <button className="btn btn-primary" onClick={handlePasscodeSubmit}>
                   Submit
                 </button>
-                <button
-                  className="btn btn-secondary"
-                  onClick={closePasscodeModal}
-                >
+                <button className="btn btn-secondary" onClick={closePasscodeModal}>
                   Cancel
                 </button>
               </div>
             </div>
           </div>
+
         </div>
       )}
 
