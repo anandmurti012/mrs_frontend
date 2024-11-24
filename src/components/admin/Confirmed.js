@@ -402,7 +402,6 @@ const ConfirmedBooking = () => {
       </body>
     </html>
   `;
-  
     printWindow.document.write(content);
     printWindow.document.close();
   };
