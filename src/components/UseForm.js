@@ -519,7 +519,11 @@ const UserForm = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_APIURL}/api/alldoctors`);
+        const response = await axios.get(`${process.env.REACT_APP_APIURL}/api/alldoctors`,{
+          headers:{
+            "Content-Type":"application/json"
+          }
+        });
         setDoctors(response.data);
       } catch (error) {
         console.error('Error fetching doctors:', error);
@@ -530,7 +534,7 @@ const UserForm = () => {
   }, []);
 
   const doctorName = bookingData?.doctor;
-  const doctor = doctors.find((doc) => doc.name === doctorName);
+  const doctor = doctors?.find((doc) => doc.name === doctorName);
   const specialization = doctor ? doctor.specialization : 'Not Available';
 
   const handleDoctorChange = async (e) => {
@@ -556,7 +560,7 @@ const UserForm = () => {
     const selectedDay = e.target.value;
     setFormData({ ...formData, day: selectedDay, timeSlot: '' });
 
-    const selectedAvailability = availability.find(slot => slot.day === selectedDay);
+    const selectedAvailability = availability?.find(slot => slot.day === selectedDay);
     setTimeSlots(selectedAvailability ? selectedAvailability.timeSlots : []);
   };
 
