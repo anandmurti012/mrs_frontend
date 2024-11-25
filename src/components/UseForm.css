@@ -1,11 +1,14 @@
-/* Form Container */
-body{
+ /* Body */
+body {
   background-image: url("https://t3.ftcdn.net/jpg/09/32/26/74/360_F_932267458_Zqtzmc9EIfMjenziYeSO5FLwC8ryfhHy.jpg");
-background-repeat: no-repeat;
-background-size: cover;
+  background-repeat: no-repeat;
+  background-size: cover;
   font-family: 'Aboreto', cursive;
+  margin: 0;
+  padding: 0;
 }
- 
+
+/* User Form */
 .user-form {
   display: flex;
   flex-direction: row;
@@ -17,6 +20,7 @@ background-size: cover;
   border: 1px solid #e0e0e0;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap; /* Allows wrapping on smaller screens */
 }
 
 .form-title-container {
@@ -33,6 +37,7 @@ background-size: cover;
 
 .form-column {
   flex: 1;
+  min-width: 280px; /* Ensures a minimum width for columns on small screens */
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -73,7 +78,6 @@ background-size: cover;
 }
 
 .submit-btn {
-  grid-column: span 3;
   background-color: #3182ce;
   color: #fff;
   padding: 10px 20px;
@@ -83,16 +87,18 @@ background-size: cover;
   font-size: 16px;
   transition: background-color 0.3s;
   margin-top: 20px;
+  width: 100%; /* Ensures button is responsive */
 }
 
 .submit-btn:hover {
   background-color: #2b6cb0;
 }
- 
+
+/* Confirmation Card */
 .card {
   max-width: 500px;
-  margin-left: 500px;
-  width: 100%;
+  margin: 20px auto; /* Centers the card on smaller screens */
+  width: 90%; /* Adjusts width on smaller screens */
   background-color: #fff;
   border: 1px solid #e0e0e0;
   border-radius: 10px;
@@ -129,4 +135,65 @@ background-size: cover;
 
 .card strong {
   color: #333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .user-form {
+    flex-direction: column; /* Stacks columns vertically */
+    padding: 10px;
+  }
+
+  .form-column {
+    min-width: 100%; /* Makes columns full-width */
+  }
+
+  .form-group input,
+  .form-group select {
+    font-size: 14px;
+  }
+
+  .submit-btn {
+    font-size: 14px;
+    padding: 8px 15px;
+  }
+
+  .card {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-form {
+    padding: 5px;
+    gap: 10px;
+  }
+
+  .form-group label {
+    font-size: 12px;
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 6px;
+    font-size: 12px;
+  }
+
+  .submit-btn {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .card {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .card h3 {
+    font-size: 20px;
+  }
+
+  .card p {
+    font-size: 14px;
+  }
 }
