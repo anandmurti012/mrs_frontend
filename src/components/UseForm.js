@@ -18,7 +18,7 @@
 //   // const auth = useSelector((state) => state.bookings);
 //   //   const token = auth.token
 //   const handleAdminLoginClick = () => {
-//     navigate("/admin-login"); // Replace '/admin-login' with the actual path to the login page
+//     navigate("/adminLogin"); // Replace '/adminLogin' with the actual path to the login page
 //   };
 
 //   const [formData, setFormData] = useState({
@@ -513,7 +513,7 @@ const UserForm = () => {
   console.log("auth:::", auth);
   const token = auth.token
   const handleAdminLoginClick = () => {
-    navigate("/admin-login"); // Replace '/admin-login' with the actual path to the login page
+    navigate("/adminLogin"); // Replace '/adminLogin' with the actual path to the login page
   };
 
   useEffect(() => {

@@ -11,12 +11,11 @@ import AdminForm from './components/admin/AdminForm';
 
 function App() {
   const auth = useSelector((state) => state.doctor);
-  const isLoggedIn = auth.token !== null && auth.token !== undefined;
-
+  
   return (
     <BrowserRouter>
       {
-        isLoggedIn ?
+        auth?.token ?
           <Routes>
             <Route path="/" element={<AdminPanel />} />
             <Route path="/adminForm" element={<AdminForm />} />
@@ -25,7 +24,7 @@ function App() {
           :
           <Routes>
             <Route path="/" element={<UserForm />} />
-            <Route path="/admin-login" element={<AdminLogin />} />
+            <Route path="/adminLogin" element={<AdminLogin />} />
             <Route path="*" element={'404 Not Found'} />
           </Routes>
       }

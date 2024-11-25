@@ -55,14 +55,17 @@ import { NavLink } from 'react-router-dom';
 import { LogoutAction } from '../redux/doctorSlice';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { persistor } from '../redux/store';
 
 const TopNav = ({ activeTab }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const handleLogout = async () => {
-        dispatch(LogoutAction());
-        window.location.reload();
+        persistor.purge().then(() => {
+            navigate('/');
+            window.location.reload();
+        });
     };
 
     const handleBookAppointment = () => {

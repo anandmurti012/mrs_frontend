@@ -170,7 +170,7 @@ function AdminLogin() {
     const data = { email, password };
 
     try {
-      const response = await axios.post(
+      await axios.post(
         `${process.env.REACT_APP_APIURL}/api/adminlogin`,
         data,
         {
@@ -178,11 +178,19 @@ function AdminLogin() {
             "Content-Type": "application/json",
           },
         }
-      );
+      ).then(async response => {
+        // res accept 200 & 201
 
-      await dispatch(setLoginData({ token: response.data.token }));
-      setIsLoading(false);
-      navigate("/");
+        await dispatch(setLoginData({ token: response.data.token }));
+        setIsLoading(false);
+        navigate("/");
+
+      }).catch(error => {
+        // error
+        // res accept 404 , 401, 500, 409
+        setIsLoading(false);
+        window.alert(error.response?.data?.msg || error.message);
+      })
 
     } catch (error) {
       setIsLoading(false);
@@ -192,7 +200,7 @@ function AdminLogin() {
 
   return (
     <>
-    <div className="d-flex align-items-center justify-content-between" style={{ margin: '20px' }}>
+      <div className="d-flex align-items-center justify-content-between" style={{ margin: '20px' }}>
         {/* Logo */}
         <img
           style={{
@@ -218,61 +226,61 @@ function AdminLogin() {
 
 
       </div>
-    <div className="admin-login-container" style={{marginTop:'-110px'}}> 
-    <div className="d-flex align-items-center justify-content-between" style={{ margin: '20px', }}>
-        {/* Logo */}
-        <img
-          style={{
-            height: '450px',
-            width: '750px',
-            marginLeft: '10px',
-          }}
-          src=" https://cdni.iconscout.com/illustration/premium/thumb/admin-services-illustration-download-in-svg-png-gif-file-formats--dashboard-control-room-panel-administration-isometric-pack-business-illustrations-3804451.png"
-        />
-
-        {/* Heading */}
-         
-
-
-
-      </div>
-      <div className="admin-login-card" style={{marginLeft:'30px'}}>
-        <h2 className="admin-login-title">Admin Login</h2>
-        
-        <FormControl className="login-form-control" isRequired>
-          <FormLabel>Email address</FormLabel>
-          <Input
-            placeholder="Enter your email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+      <div className="adminLogin-container" style={{ marginTop: '-110px' }}>
+        <div className="d-flex align-items-center justify-content-between" style={{ margin: '20px', }}>
+          {/* Logo */}
+          <img
+            style={{
+              height: '450px',
+              width: '750px',
+              marginLeft: '10px',
+            }}
+            src=" https://cdni.iconscout.com/illustration/premium/thumb/admin-services-illustration-download-in-svg-png-gif-file-formats--dashboard-control-room-panel-administration-isometric-pack-business-illustrations-3804451.png"
           />
-        </FormControl>
 
-        <FormControl className="login-form-control" mt={4} isRequired>
-          <FormLabel>Password</FormLabel>
-          <Input
-            placeholder="Enter your password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </FormControl>
+          {/* Heading */}
 
-        <Button
-          className="login-button"
-          colorScheme="blue"
-          mt={6}
-          onClick={handleSubmit}
-          isLoading={isLoading}
-          loadingText="Logging in..."
-        >
-          Login
-        </Button>
 
-        {isLoading && <Spinner color="blue.500" />}
+
+
+        </div>
+        <div className="adminLogin-card" style={{ marginLeft: '30px' }}>
+          <h2 className="adminLogin-title">Admin Login</h2>
+
+          <FormControl className="login-form-control" isRequired>
+            <FormLabel>Email address</FormLabel>
+            <Input
+              placeholder="Enter your email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </FormControl>
+
+          <FormControl className="login-form-control" mt={4} isRequired>
+            <FormLabel>Password</FormLabel>
+            <Input
+              placeholder="Enter your password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </FormControl>
+
+          <Button
+            className="login-button"
+            colorScheme="blue"
+            mt={6}
+            onClick={handleSubmit}
+            isLoading={isLoading}
+            loadingText="Logging in..."
+          >
+            Login
+          </Button>
+
+          {isLoading && <Spinner color="blue.500" />}
+        </div>
       </div>
-    </div>
     </>
   );
 }
