@@ -22,9 +22,11 @@ const ViewBookings = ({ fetchAppointments }) => {
   const [searchTerm, setSearchTerm] = useState("");
   // const [searchDoctorTerm, setSearchDoctorTerm] = useState("");
   const [selectedDoctor, setSelectedDoctor] = useState(""); // To store selected doctor
+
   const [status, setStatus] = useState("");
   const auth = useSelector((state) => state.doctor);
-  console.log("auth::::", auth);
+
+
   const [selectedDate, setSelectedDate] = useState(null);
   const token = auth.token
 
@@ -104,7 +106,7 @@ const ViewBookings = ({ fetchAppointments }) => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `${process.env.REACT_APP_APIURL}/api/bookings/?searchTerm=${searchTerm}&status=${status}&selectedDate=${selectedDate}`, {
+        `${process.env.REACT_APP_APIURL}/api/bookings/?searchTerm=${searchTerm}&status=${status}&selectedDate=${selectedDate}&selectedDoctor=${selectedDoctor}`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': token
@@ -124,8 +126,8 @@ const ViewBookings = ({ fetchAppointments }) => {
   
 
   useEffect(() => {
-    fetchBookings(searchTerm, selectedDate, status);
-  }, [searchTerm, selectedDate, status]);
+    fetchBookings(searchTerm, selectedDate, status,selectedDoctor);
+  }, [searchTerm, selectedDate, status,selectedDoctor]);
 
   const openPopup = (booking) => {
     setSelectedBooking(booking);
