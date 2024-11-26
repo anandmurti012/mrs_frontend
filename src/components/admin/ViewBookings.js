@@ -30,8 +30,8 @@ const ViewBookings = ({ fetchAppointments }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const token = auth.token
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
+  const handleDateChange = (e) => {
+    setSelectedDate(e.target.value);
   };
 
   const handleFetch = () => {
@@ -107,13 +107,13 @@ const ViewBookings = ({ fetchAppointments }) => {
       setLoading(true);
       const res = await axios.get(
         `${process.env.REACT_APP_APIURL}/api/bookings/?searchTerm=${searchTerm}&status=${status}&selectedDate=${selectedDate}&selectedDoctor=${selectedDoctor}`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': token
-          }
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
         }
+      }
       );
-      
+
       // Sort bookings by createdAt or bookingDate in descending order to get latest on top
       const sortedBookings = res.data.sort((a, b) => new Date(b.timeStamp) - new Date(a.timeStamp));
       // console.log("sorted:::", sortedBookings);
@@ -123,11 +123,11 @@ const ViewBookings = ({ fetchAppointments }) => {
       setLoading(false);
     }
   };
-  
+
 
   useEffect(() => {
-    fetchBookings(searchTerm, selectedDate, status,selectedDoctor);
-  }, [searchTerm, selectedDate, status,selectedDoctor]);
+    fetchBookings(searchTerm, selectedDate, status, selectedDoctor);
+  }, [searchTerm, selectedDate, status, selectedDoctor]);
 
   const openPopup = (booking) => {
     setSelectedBooking(booking);
@@ -211,7 +211,7 @@ const ViewBookings = ({ fetchAppointments }) => {
   return (
     <div>
       <ToastContainer />
-      <div style={{ overflowX: "auto" }}>
+      <div style={{}}>
         {/* Search panel */}
         <div className="d-flex flex-row align-items-center">
           <div className="col-sm-12 col-lg-3 mb-2">
@@ -257,12 +257,12 @@ const ViewBookings = ({ fetchAppointments }) => {
           </div>
           <div>
             <InputGroup className="mb-2 ms-3">
-              <DatePicker
-                selected={selectedDate}
-                onChange={handleDateChange}
-                dateFormat="YYYY-MM-dd" // Display date only
+              <input
+                type="date"
+                value={selectedDate} // Use 'value' for controlled components
+                onChange={handleDateChange} // Handle the change event
                 className="form-control"
-                placeholderText="Select Date"
+                placeholder="Select Date" // Use 'placeholder' for type="date"
               />
             </InputGroup>
 
