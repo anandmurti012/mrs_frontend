@@ -17,6 +17,26 @@ const UserForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  function formatDateTime(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const day = String(date.getDate()).padStart(2, "0");
+  
+    // Get hours, minutes, and seconds
+    let hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+  
+    // Determine AM/PM
+    const ampm = hours >= 12 ? "PM" : "AM";
+  
+    // Convert hours to 12-hour format
+    hours = hours % 12 || 12; // If hours is 0, set it to 12
+  
+    // Return formatted date and time
+    return `${year}-${month}-${day} [${hours}:${minutes}:${seconds} ${ampm}]`;
+  }
+
   const [formData, setFormData] = useState({
     name: '',
     address: '',
@@ -29,7 +49,8 @@ const UserForm = () => {
     timeSlot: [],
     addedBy: 'user', // Set to 'user' by default
     adminId: '',
-    adminName: ''
+    adminName: '',
+    timeStamp: formatDateTime(new Date()),
   });
 
   const [errors, setErrors] = useState({});
@@ -53,6 +74,7 @@ const UserForm = () => {
             "Content-Type": "application/json"
           }
         });
+        console.log("doctor fees::::::", response);
         setDoctors(response.data);
       } catch (error) {
         console.error('Error fetching doctors:', error);
@@ -65,6 +87,7 @@ const UserForm = () => {
   const doctorName = bookingData?.doctor;
   const doctor = doctors?.find((doc) => doc.name === doctorName);
   const specialization = doctor ? doctor.specialization : 'Not Available';
+  const fees = doctor ? doctor.fees : 'Not Available';
 
   const handleDoctorChange = async (e) => {
     const selectedDoctor = e.target.value;
@@ -92,6 +115,9 @@ const UserForm = () => {
     const selectedAvailability = availability?.find(slot => slot.day === selectedDay);
     setTimeSlots(selectedAvailability ? selectedAvailability.timeSlots : []);
   };
+  const handleTimeSlotChange = (e) => {
+    setFormData({ ...formData, timeSlot: e.target.value });
+  };
   const formatTimeTo12Hour = (time) => {
     if (!time || typeof time !== "string") return "N/A";
     const [hours, minutes] = time.split(":").map(Number);
@@ -99,9 +125,6 @@ const UserForm = () => {
     const period = hours >= 12 ? "PM" : "AM";
     const formattedHours = hours % 12 || 12;
     return `${formattedHours}:${String(minutes).padStart(2, "0")} ${period}`;
-  };
-  const handleTimeSlotChange = (e) => {
-    setFormData({ ...formData, timeSlot: e.target.value });
   };
   // const formatTimeTo12Hour = (time) => {
   //   if (!time || typeof time !== 'string') return 'N/A';
@@ -127,7 +150,7 @@ const UserForm = () => {
       newErrors.phone = '';
     }
     if (!formData.gender) newErrors.gender = 'Gender is required';
-    if (!formData.age || formData.age < 18 || formData.age > 100) {
+    if (!formData.age || formData.age < 1 || formData.age > 100) {
       newErrors.age = 'Age must be between 18 and 100';
     }
     if (!formData.doctor) newErrors.doctor = 'Doctor selection is required';
@@ -190,7 +213,8 @@ const UserForm = () => {
       timeSlot: [],
       addedBy: 'user', // Set to 'user' by default
       adminId: '',
-      adminName: ''
+      adminName: '',
+      timeStamp: new Date().toISOString(),
     });
   };
 
@@ -219,9 +243,11 @@ const UserForm = () => {
             <p><b>Address:</b> {bookingData.address}</p>
             <p><b>Phone no:</b> {bookingData.phone}</p>
             <p><b>Doctor's Name:</b> {bookingData.doctor}-({specialization})</p>
+            <p style={{backgroundColor:'rgb(252, 237, 162)'}}><b>Consultation fees:</b> <span style={{color:'teal'}}>₹{fees}</span> you need to pay at Counter</p>
+              <p style={{backgroundColor:'rgb(252, 237, 162)'}}><b>Booking Date & Time:</b> {formData.timeStamp}</p>
             <p><b>Consulting Time:</b> {formData.day}- [{bookingData.timeSlot.split(" - ")
               .map((time) => formatTimeTo12Hour(time))
-              .join(" - ")}]</p>
+              .join(" - ")}]<br></br> (Nearest <span style={{color:'teal'}}><b>{formData.day}</b></span> from Booking Confirmation time)</p>
             <p style={{ fontSize: '15px', color: 'red' }}>
               <strong>Note:</strong>
               <span style={{ color: 'green' }}> "Please take a screenshot", </span>

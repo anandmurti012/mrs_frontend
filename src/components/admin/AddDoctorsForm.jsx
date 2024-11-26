@@ -53,6 +53,7 @@ const AddDoctorsForm = () => {
             phone: '',
             address: '',
             consultation: '',
+            fees:'',
             experience: '',
             specialization: '',
             availability: [],
@@ -63,6 +64,7 @@ const AddDoctorsForm = () => {
             phone: Yup.string().required("Doctor's phone number is required"),
             address: Yup.string().required("Doctor's address is required"),
             consultation: Yup.number().required('Consultation quota is required').min(1, 'Minimum 1 required'),
+            fees: Yup.number().required('Consultation fees is required').min(1, 'Minimum 1 required'),
             experience: Yup.number().required('Experience is required').min(0, "Experience can't be negative"),
             specialization: Yup.string().required('Specialization is required'),
         }),
@@ -182,6 +184,20 @@ const AddDoctorsForm = () => {
                     />
                     {formik.touched.consultation && formik.errors.consultation && (
                         <span className="error">{formik.errors.consultation}</span>
+                    )}
+                </div>
+                <div className="form-group">
+                    <label>Consultation Fees</label>
+                    <input
+                        type="number"
+                        name="fees"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.fees}
+                        placeholder="Doctor's Consultation fees"
+                    />
+                    {formik.touched.fees && formik.errors.fees && (
+                        <span className="error">{formik.errors.fees}</span>
                     )}
                 </div>
 

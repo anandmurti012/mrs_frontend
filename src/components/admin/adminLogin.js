@@ -519,7 +519,7 @@ function AdminLogin() {
           <img
             style={{
               height: '450px',
-              width: '750px',
+              width: '850px',
               marginLeft: '10px',
             }}
             src="https://cdni.iconscout.com/illustration/premium/thumb/admin-services-illustration-download-in-svg-png-gif-file-formats--dashboard-control-room-panel-administration-isometric-pack-business-illustrations-3804451.png"

@@ -1,22 +1,27 @@
-.modalBody{
-  padding:20px;
+.modalBody {
+  padding: 20px;
 }
+
 .adminLogin-container {
   display: flex;
+  flex-wrap: wrap; /* Allow wrapping for responsiveness */
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   min-height: 100vh; /* Center vertically */
   background-color: #f4f7fc; /* Light background */
+  padding: 20px; /* Add some padding for smaller screens */
 }
 
 .adminLogin-card {
   width: 100%;
-  max-width: 400px;
+  max-width: 450px;
   background-color: #fff;
   padding: 30px;
   border-radius: 8px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
   border: 1px solid #e0e0e0; /* Light border */
+  margin-left: auto;
+  margin-right: auto; /* Center the card for small screens */
 }
 
 .adminLogin-title {
@@ -73,4 +78,74 @@ button.login-button:disabled {
 
 button.login-button:focus {
   outline: none;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 1200px) {
+  .adminLogin-container {
+    flex-direction: column;
+    justify-content: center; /* Stack vertically for smaller screens */
+  }
+
+  .adminLogin-card {
+    margin-top: 20px; /* Add spacing between elements */
+    max-width: 90%; /* Reduce width to fit smaller screens */
+  }
+
+  .adminLogin-container img {
+    max-width: 80%; /* Shrink image for smaller screens */
+    height: auto;
+    margin: 0 auto; /* Center image */
+  }
+}
+
+@media (max-width: 768px) {
+  .adminLogin-container {
+    flex-direction: column;
+    padding: 15px;
+  }
+
+  .adminLogin-card {
+    padding: 20px;
+  }
+
+  .adminLogin-title {
+    font-size: 20px;
+  }
+  input[type="email"],
+  input[type="password"] {
+    font-size: 13px;
+    padding: 8px;
+  }
+
+  button.login-button {
+    font-size: 14px;
+    padding: 8px;
+  }
+ 
+}
+
+@media (max-width: 480px) {
+  .adminLogin-card {
+    padding: 15px;
+  }
+
+  .adminLogin-title {
+    font-size: 18px;
+  }
+
+  .login-button {
+    font-size: 12px;
+    padding: 6px;
+  }
+
+  input[type="email"],
+  input[type="password"] {
+    font-size: 12px;
+    padding: 6px;
+  }
+
+  .adminLogin-container img {
+    max-width: 100%; /* Full width on very small screens */
+  }
 }
