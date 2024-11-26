@@ -169,7 +169,8 @@ const AddAdmin = () => {
                             value={adminFormik.values.password}
                             placeholder="Enter password"
                         />
-                        <span>
+                         <span onClick={() => setShowPassword(!showPassword)}>
+                            {showPassword ? <FaEyeSlash /> : <FaEye />}
                         </span>
                     </div>
                     {adminFormik.touched.password && adminFormik.errors.password && (
