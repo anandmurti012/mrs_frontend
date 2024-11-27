@@ -41,7 +41,7 @@ const UserForm = () => {
     name: '',
     address: '',
     phone: '',
-    email: 'Optional',
+    email: 'N/A',
     gender: '',
     age: '',
     doctor: '',
@@ -60,7 +60,7 @@ const UserForm = () => {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [bookingData, setBookingData] = useState(null);
   const auth = useSelector((state) => state.doctor);
-  console.log("auth:::", auth);
+  
   const token = auth.token
   const handleAdminLoginClick = () => {
     navigate("/adminLogin"); // Replace '/adminLogin' with the actual path to the login page
@@ -74,7 +74,7 @@ const UserForm = () => {
             "Content-Type": "application/json"
           }
         });
-        console.log("doctor fees::::::", response);
+        
         setDoctors(response.data);
       } catch (error) {
         console.error('Error fetching doctors:', error);
