@@ -8,6 +8,7 @@ import { Button, InputGroup } from 'react-bootstrap';
 import dayjs from 'dayjs';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
+import Pagination from "../Pagination";
 
 const ViewBookings = ({ fetchAppointments }) => {
   const [bookings, setBookings] = useState([]);
@@ -25,6 +26,16 @@ const ViewBookings = ({ fetchAppointments }) => {
 
   const [status, setStatus] = useState("");
   const auth = useSelector((state) => state.doctor);
+
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    fetchBookings(page)
+  }
+
 
 
   const [selectedDate, setSelectedDate] = useState(null);
@@ -92,7 +103,7 @@ const ViewBookings = ({ fetchAppointments }) => {
     const fetchDoctors = async () => {
       try {
         const response = await axios.get(`${process.env.REACT_APP_APIURL}/api/doctors`); // Adjust API endpoint
-        console.log("response:::: doctors list", response);
+
         setDoctors(response.data);
       } catch (error) {
         console.error("Error fetching doctors:", error);
@@ -102,11 +113,11 @@ const ViewBookings = ({ fetchAppointments }) => {
     fetchDoctors();
   }, []);
 
-  const fetchBookings = async () => {
+  const fetchBookings = async (page) => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `${process.env.REACT_APP_APIURL}/api/bookings/?searchTerm=${searchTerm}&status=${status}&selectedDate=${selectedDate}&selectedDoctor=${selectedDoctor}`, {
+        `${process.env.REACT_APP_APIURL}/api/bookings/?searchTerm=${searchTerm}&status=${status}&selectedDate=${selectedDate}&selectedDoctor=${selectedDoctor}&page=${page ? page : 1}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': token
@@ -115,9 +126,10 @@ const ViewBookings = ({ fetchAppointments }) => {
       );
 
       // Sort bookings by createdAt or bookingDate in descending order to get latest on top
-      const sortedBookings = res.data.sort((a, b) => new Date(b.timeStamp) - new Date(a.timeStamp));
+      const sortedBookings = res?.data?.results.sort((a, b) => new Date(b.timeStamp) - new Date(a.timeStamp));
       // console.log("sorted:::", sortedBookings);
       setBookings(sortedBookings); // Set the sorted bookings
+      setTotalPages(res.data.totalPages)
     } catch (error) {
       toast.error("Failed to load bookings");
       setLoading(false);
@@ -328,6 +340,13 @@ const ViewBookings = ({ fetchAppointments }) => {
             )}
           </tbody>
         </table>
+
+        {/* pagination */}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
 
 
