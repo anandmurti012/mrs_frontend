@@ -41,10 +41,11 @@ const UserForm = () => {
     name: '',
     address: '',
     phone: '',
-    email: 'N/A',
+    email: '',
     gender: '',
     age: '',
     doctor: '',
+    fees:'',
     day: '',
     timeSlot: [],
     addedBy: 'user', // Set to 'user' by default
@@ -93,7 +94,7 @@ const UserForm = () => {
     const selectedDoctor = e.target.value;
     setFormData({ ...formData, doctor: selectedDoctor, day: '', timeSlot: '' });
     setTimeSlots([]);
-
+  
     if (selectedDoctor) {
       try {
         const response = await axios.get(`${process.env.REACT_APP_APIURL}/api/doctorAvailability/${selectedDoctor}`);
@@ -106,7 +107,14 @@ const UserForm = () => {
     } else {
       setAvailability([]);
     }
+  
+    // Get the selected doctor's details
+    const doctor = doctors?.find((doc) => doc.name === selectedDoctor);
+    if (doctor) {
+      setFormData({ ...formData, doctor: selectedDoctor, fees: doctor.fees });
+    }
   };
+  
 
   const handleDayChange = (e) => {
     const selectedDay = e.target.value;

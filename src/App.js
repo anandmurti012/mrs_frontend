@@ -10,12 +10,12 @@ import AdminForm from './components/admin/AdminForm';
 
 
 function App() {
-  const auth = useSelector((state) => state.doctor);
+  const token = useSelector((state) => state.doctor.token);
   
   return (
     <BrowserRouter>
       {
-        auth?.token ?
+        token ?
           <Routes>
             <Route path="/" element={<AdminPanel />} />
             <Route path="/adminForm" element={<AdminForm />} />

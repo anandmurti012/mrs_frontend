@@ -7,7 +7,8 @@ const initialState = {
     userName: ',',
     pAddress: '',
     pPhone: '',
-    token: ''
+    token: '',
+    user: {}
 };
 
 const doctorSlice = createSlice({
@@ -30,6 +31,7 @@ const doctorSlice = createSlice({
         },
         setLoginData: (state, action) => {
             state.token = action.payload.token;
+            state.user = action.payload.user;
         },
         LogoutAction: (state, action) => {
             state.token = null;
@@ -37,5 +39,5 @@ const doctorSlice = createSlice({
     },
 });
 
-export const { setDoctorDetails, clearDoctorDetails, setLoginData,LogoutAction } = doctorSlice.actions;
+export const { setDoctorDetails, clearDoctorDetails, setLoginData, LogoutAction } = doctorSlice.actions;
 export default doctorSlice.reducer;

@@ -9,8 +9,16 @@ import dayjs from 'dayjs';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import Pagination from "../Pagination";
+import Loading from "../Loading";
 
 const ViewBookings = ({ fetchAppointments }) => {
+  //-------------------- Dev By Amit --------------------
+  const admin = useSelector((state) => state.doctor.user);
+  // console.log(admin?.passCode)
+
+  const [isPageLoading, setIsPageLoading] = useState(true)
+
+  //------------------- Dev By Anand --------------------
   const [bookings, setBookings] = useState([]);
   const [doctors, setDoctors] = useState([]); // To store available doctors
   const [loading, setLoading] = useState(true);
@@ -116,30 +124,44 @@ const ViewBookings = ({ fetchAppointments }) => {
   const fetchBookings = async (page) => {
     try {
       setLoading(true);
-      const res = await axios.get(
-        `${process.env.REACT_APP_APIURL}/api/bookings/?searchTerm=${searchTerm}&status=${status}&selectedDate=${selectedDate}&selectedDoctor=${selectedDoctor}&page=${page ? page : 1}`, {
+      setIsPageLoading(true)
+      await axios.get(
+        `${process.env.REACT_APP_APIURL}/api/bookings/?searchTerm=${searchTerm}&status=&selectedDate=${selectedDate}&selectedDoctor=${selectedDoctor}&page=${page ? page : 1}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': token
         }
       }
-      );
-
-      // Sort bookings by createdAt or bookingDate in descending order to get latest on top
-      const sortedBookings = res?.data?.results.sort((a, b) => new Date(b.timeStamp) - new Date(a.timeStamp));
-      // console.log("sorted:::", sortedBookings);
-      setBookings(sortedBookings); // Set the sorted bookings
-      setTotalPages(res.data.totalPages)
+      ).then(res => {
+        setIsPageLoading(false)
+        // Sort bookings by createdAt or bookingDate in descending order to get latest on top
+        const sortedBookings = res?.data?.results.sort((a, b) => new Date(b.timeStamp) - new Date(a.timeStamp));
+        // console.log("sorted:::", sortedBookings);
+        setBookings(sortedBookings); // Set the sorted bookings
+        setTotalPages(res.data.totalPages)
+      }).catch(error => {
+        setIsPageLoading(false)
+        toast.error("Failed to load bookings");
+        setLoading(false);
+      })
     } catch (error) {
       toast.error("Failed to load bookings");
       setLoading(false);
+      setIsPageLoading(false)
     }
   };
 
 
+
   useEffect(() => {
-    fetchBookings(searchTerm, selectedDate, status, selectedDoctor);
-  }, [searchTerm, selectedDate, status, selectedDoctor]);
+    // Debounce the search function
+    const debounceTimeout = setTimeout(() => {
+      fetchBookings(searchTerm, selectedDate, status, selectedDoctor);
+    }, 666); // 6000 ms = 6 seconds
+
+    // Cleanup the timeout if the component unmounts or dependencies change before the debounce time
+    return () => clearTimeout(debounceTimeout);
+  }, [searchTerm, selectedDate, status, selectedDoctor]); // Re-run when any of these change
 
   const openPopup = (booking) => {
     setSelectedBooking(booking);
@@ -161,10 +183,11 @@ const ViewBookings = ({ fetchAppointments }) => {
   };
 
   const handlePasscodeSubmit = () => {
-    if (passcode === "0000") {
+
+    if (passcode === admin?.passCode) {
       // Replace '1234' with the actual passcode
       if (actionType === "confirm") {
-        handleConfirm(selectedBooking.bookingId);
+        handleConfirm(selectedBooking?.bookingId);
       }
       closePasscodeModal();
       closePopup();
@@ -230,11 +253,11 @@ const ViewBookings = ({ fetchAppointments }) => {
             <input
               type="search"
               onChange={searchInput}
-              placeholder="Name / Email / Mobile"
+              placeholder="Name / Booking Id / Mobile"
               className="form-control"
             />
           </div>
- 
+
           <div className="col-sm-12 col-lg-3 mb-2 ms-3">
             <select
               onChange={(e) => setSelectedDoctor(e.target.value)}
@@ -263,72 +286,86 @@ const ViewBookings = ({ fetchAppointments }) => {
           </div>
         </div>
 
-        <table style={{ width: "90vw", tableLayout: "fixed" }}>
-          <thead>
-            <tr>
-              <th style={{ width: "8%" }} data-title="Patient's Name">
-                Name
-              </th>
-              <th style={{ width: "5%" }} data-title="Age">
-                Age
-              </th>
-              <th style={{ width: "8%" }} data-title="Phone No.">
-                Phone
-              </th>
-              <th style={{ width: "10%" }} data-title="Email Address">
-                Email
-              </th>
-              <th style={{ width: "5%" }} data-title="Gender">
-                Gender
-              </th>
-              <th style={{ width: "10%" }} data-title="Assigned Doctor">
-                Doctor
-              </th>
-              <th style={{ width: "7%" }} data-title="Selected Day">
-                Day
-              </th>
-              <th style={{ width: "10%" }} data-title="Time Slot">
-                Appointment
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {bookings.length > 0 ? (
-              bookings.map((booking) => (
-                <tr key={booking.id} onClick={() => openPopup(booking)}>
-                  <td style={{ cursor: "pointer", color: "#007BFF" }}>
-                    <strong>{booking.name}</strong>
-                  </td>
-                  <td>{booking.age}</td>
-                  <td>{booking.phone}</td>
-                  <td>{booking.email}</td>
-                  <td>{booking.gender}</td>
-                  <td>{booking.doctor}</td>
-                  <td>{booking.day || "N/A"}</td>
-                  <td>
-                    {booking.timeSlot
-                      ? booking.timeSlot
-                        .split(" - ")
-                        .map((time) => formatTimeTo12Hour(time))
-                        .join(" - ")
-                      : "N/A"}
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="8">No bookings available</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+        {
+          isPageLoading ?
+            <Loading />
+            :
+            <>
+              <table style={{ width: "100%" }}>
+                <thead>
+                  <tr>
+                    <th style={{ width: "8%" }} data-title="Patient's Name">
+                      Name
+                    </th>
+                    <th style={{ width: "8%" }} data-title="Patient's Name">
+                      Booking Id
+                    </th>
+                    <th style={{ width: "5%" }} data-title="Age">
+                      Age
+                    </th>
+                    <th style={{ width: "8%" }} data-title="Phone No.">
+                      Phone
+                    </th>
+                    <th style={{ width: "10%" }} data-title="Email Address">
+                      Email
+                    </th>
+                    <th style={{ width: "5%" }} data-title="Gender">
+                      Gender
+                    </th>
+                    <th style={{ width: "10%" }} data-title="Assigned Doctor">
+                      Doctor
+                    </th>
+                    <th style={{ width: "7%" }} data-title="Selected Day">
+                      Day
+                    </th>
+                    <th style={{ width: "10%" }} data-title="Time Slot">
+                      Appointment
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {bookings.length > 0 ? (
+                    bookings.map((booking) => (
+                      <tr key={booking?.id} >
+                        <td onClick={() => openPopup(booking)} style={{ cursor: "pointer", color: "#007BFF" }}>
+                          <strong>{booking?.name}</strong>
+                        </td>
+                        <td>{booking?.bookingId}</td>
+                        <td>{booking?.age}</td>
+                        <td>{booking?.phone}</td>
+                        <td>{booking?.email}</td>
+                        <td>{booking?.gender}</td>
+                        <td>{booking?.doctor}</td>
+                        <td>{booking?.day || "N/A"}</td>
+                        <td>
+                          {booking?.timeSlot
+                            ? booking?.timeSlot
+                              .split(" - ")
+                              .map((time) => formatTimeTo12Hour(time))
+                              .join(" - ")
+                            : "N/A"}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="8">No bookings available</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+              {/* pagination */}
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </>
+        }
 
-        {/* pagination */}
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-        />
+
+
+
       </div>
 
 
@@ -346,7 +383,7 @@ const ViewBookings = ({ fetchAppointments }) => {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title" style={{ margin: 0 }}>
-                  Booking Id: <strong>{selectedBooking.bookingId}</strong>
+                  Booking Id: <strong>{selectedBooking?.bookingId}</strong>
                 </h5>
                 <button
                   type="button"
@@ -375,39 +412,39 @@ const ViewBookings = ({ fetchAppointments }) => {
                 <div className="container-fluid">
                   <div className="row mb-3 even-row">
                     <div className="col-md-5">
-                      <strong>Name:</strong> {selectedBooking.name}
+                      <strong>Name:</strong> {selectedBooking?.name}
                     </div>
                     <div className="col-md-3">
-                      <strong>Gender:</strong> {selectedBooking.gender}
+                      <strong>Gender:</strong> {selectedBooking?.gender}
                     </div>
                     <div className="col-md-4">
-                      <strong>Age:</strong> {selectedBooking.age}
+                      <strong>Age:</strong> {selectedBooking?.age}
                     </div>
                   </div>
                   <div className="row mb-3 odd-row">
                     <div className="col-md-5">
-                      <strong>Email:</strong> {selectedBooking.email}
+                      <strong>Email:</strong> {selectedBooking?.email}
                     </div>
                     <div className="col-md-3">
-                      <strong>Phone:</strong> {selectedBooking.phone}
+                      <strong>Phone:</strong> {selectedBooking?.phone}
                     </div>
                     <div className="col-md-4">
-                      <strong>Doctor:</strong> {selectedBooking.doctor}
+                      <strong>Doctor:</strong> {selectedBooking?.doctor}
                     </div>
                   </div>
                   <div className="row odd-row">
                     <div className="col-md-12 mt-3">
-                      <strong>Address:</strong> {selectedBooking.address}
+                      <strong>Address:</strong> {selectedBooking?.address}
                     </div>
                   </div>
                   <div className="row mb-3 even-row">
                     <div className="col-md-3">
-                      <strong>Day:</strong> {selectedBooking.day || "N/A"}
+                      <strong>Day:</strong> {selectedBooking?.day || "N/A"}
                     </div>
                     <div className="col-md-6">
                       <strong>Appointment Schedule:</strong>{" "}
-                      {selectedBooking.timeSlot
-                        ? selectedBooking.timeSlot
+                      {selectedBooking?.timeSlot
+                        ? selectedBooking?.timeSlot
                           .split(" - ")
                           .map((time) => formatTimeTo12Hour(time))
                           .join(" - ")
@@ -417,7 +454,7 @@ const ViewBookings = ({ fetchAppointments }) => {
                   <div className="row odd-row">
                     <div className="col-md-6">
                       <strong>Booking Time:</strong>{" "}
-                      {formatTimestamp(selectedBooking.timeStamp)}
+                      {formatTimestamp(selectedBooking?.timeStamp)}
                     </div>
                   </div>
                 </div>

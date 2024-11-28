@@ -473,7 +473,8 @@ function AdminLogin() {
         }
       ).then(async response => {
         // Successful response
-        await dispatch(setLoginData({ token: response.data.token }));
+        await dispatch(setLoginData({ token: response.data.token, user: response.data.user }));
+
         setIsLoading(false);
         navigate("/");
       }).catch(error => {
@@ -550,7 +551,7 @@ function AdminLogin() {
                 onChange={(e) => setPassword(e.target.value)}
               />
               <InputRightElement>
-                <span onClick={() => setShowPassword(!showPassword)} style={{ cursor: 'pointer', marginTop:'8px', marginRight:'7px' }}>
+                <span onClick={() => setShowPassword(!showPassword)} style={{ cursor: 'pointer', marginTop: '8px', marginRight: '7px' }}>
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </span>
               </InputRightElement>
