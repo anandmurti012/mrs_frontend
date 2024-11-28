@@ -314,7 +314,7 @@ const UserForm = () => {
               <div className="form-group">
                 <label htmlFor="email">
                   <span className="text-style">
-                    <FontAwesomeIcon icon={faEnvelope} /> &nbsp;&nbsp;Email (optional)
+                    <FontAwesomeIcon icon={faEnvelope} /> &nbsp;&nbsp;Email
                   </span>
                 </label>
                 <input

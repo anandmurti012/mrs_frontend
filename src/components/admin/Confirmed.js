@@ -239,6 +239,7 @@ const ConfirmedBooking = () => {
   const [actionType, setActionType] = useState(""); // "confirm" or "cancel"
   const [searchDoctorTerm, setSearchDoctorTerm] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDoctor, setSelectedDoctor] = useState(""); // To store selected doctor
   const [status, setStatus] = useState("");
   const auth = useSelector((state) => state.doctor);
   const token = auth.token
@@ -408,9 +409,10 @@ const ConfirmedBooking = () => {
   
 
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
+  const handleDateChange = (e) => {
+    setSelectedDate(e.target.value);
   };
+
   const handleCancel = async (bookingId) => {
     try {
       await axios.put(
@@ -450,7 +452,7 @@ const ConfirmedBooking = () => {
     try {
       setLoading(false);
       const res = await axios.get(
-        `${process.env.REACT_APP_APIURL}/api/confirmBookings/?searchTerm=${searchTerm}&status=${status}&searchDoctorTerm=${searchDoctorTerm}&selectedDate=${selectedDate}`, {
+        `${process.env.REACT_APP_APIURL}/api/confirmBookings/?searchTerm=${searchTerm}&status=${status}&selectedDate=${selectedDate}}&selectedDoctor=${selectedDoctor}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': token
@@ -469,8 +471,8 @@ const ConfirmedBooking = () => {
   };
 
   useEffect(() => {
-    fetchBookings(searchTerm, searchDoctorTerm, selectedDate, status);
-  }, [searchTerm, searchDoctorTerm, selectedDate, status]);
+    fetchBookings(searchTerm, selectedDoctor, selectedDate, status);
+  }, [searchTerm, selectedDoctor, selectedDate, status]);
 
 
   const openPopup = (booking) => {
@@ -491,18 +493,13 @@ const ConfirmedBooking = () => {
     return () => {
       clearTimeout(handler);
     };
-  }, [searchTerm, searchDoctorTerm, selectedDate, status]);
+  }, [searchTerm, selectedDate, status]);
   const searchInput = (e) => {
     setSearchTerm(e.target.value);
-    // console.log(e.target.value)
+     
   };
-  const searchDoctorInput = (e) => {
-    setSearchDoctorTerm(e.target.value);
-    // console.log(e.target.value)
-  };
-  // const handleDateChange = (date) => {
-  //   setSelectedDate(date);
-  // };
+ 
+ 
   const handleStatusChange = (e) => {
     setStatus(e.target.value);
   };
@@ -578,23 +575,29 @@ const ConfirmedBooking = () => {
               </select>
             </div>
             <div className="col-sm-12 col-lg-3 mb-2 ms-3">
-              <input
-                type="search"
-                onChange={searchDoctorInput}
-                placeholder="Search By Doctor's name"
-                className="form-control"
-              />
-            </div>
+            <select
+              onChange={(e) => setSelectedDoctor(e.target.value)}
+              className="form-control"
+              value={selectedDoctor}
+            >
+              <option value="">Select Doctor</option>
+              {doctors.map((doctor) => (
+                <option key={doctor.id} value={doctor.name}>
+                  {doctor.name}
+                </option>
+              ))}
+            </select>
+          </div>
             <div>
-              <InputGroup className="mb-2 ms-3">
-                <DatePicker
-                  selected={selectedDate}
-                  onChange={handleDateChange}
-                  dateFormat="YYYY-MM-dd" // Display date only
-                  className="form-control"
-                  placeholderText="Select Date"
-                />
-              </InputGroup>
+            <InputGroup className="mb-2 ms-3">
+              <input
+                type="date"
+                value={selectedDate} // Use 'value' for controlled components
+                onChange={handleDateChange} // Handle the change event
+                className="form-control"
+                placeholder="Select Date" // Use 'placeholder' for type="date"
+              />
+            </InputGroup>
 
             </div>
           </div>

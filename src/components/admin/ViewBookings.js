@@ -234,25 +234,7 @@ const ViewBookings = ({ fetchAppointments }) => {
               className="form-control"
             />
           </div>
-
-          {/*     <div className="col-sm-12 col-lg-3 mb-2 ms-3">
-            <select className="form-select" onChange={handleStatusChange}>
-              <option value="" style={{ background: "#eee" }}>
-                Status
-              </option>
-              <option value={'Confirmed'}>Confirmed</option>
-              <option value={'Cancelled'}>Cancelled</option>
-            </select>
-          </div>  */}
-
-          {/* <div className="col-sm-12 col-lg-3 mb-2 ms-3">
-            <input
-              type="search"
-              onChange={searchDoctorInput}
-              placeholder="Search By Doctor's name"
-              className="form-control"
-            />
-          </div> */}
+ 
           <div className="col-sm-12 col-lg-3 mb-2 ms-3">
             <select
               onChange={(e) => setSelectedDoctor(e.target.value)}
