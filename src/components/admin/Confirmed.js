@@ -610,7 +610,7 @@ const ConfirmedBooking = () => {
             </div>
           </div>
 
-          <table style={{ width: '90vw', tableLayout: 'fixed' }}>
+          <table style={{ width: '100%', }}>
             <thead>
               <tr>
                 <th style={{ width: '7%' }} data-title="Patient's Name">Name</th>

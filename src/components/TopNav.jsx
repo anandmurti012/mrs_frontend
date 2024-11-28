@@ -53,13 +53,15 @@ import React from 'react';
 import { FaPowerOff } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
 import { LogoutAction } from '../redux/doctorSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { persistor } from '../redux/store';
 
 const TopNav = ({ activeTab }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const admin = useSelector((state) => state.doctor.user);
+    console.log("admin:::", admin);
 
     const handleLogout = async () => {
         persistor.purge().then(() => {
@@ -97,7 +99,7 @@ const TopNav = ({ activeTab }) => {
                 >
                     Book an Appointment
                 </button>
-                <span style={{ marginRight: '20px' }}><strong>Admin</strong></span>
+                <span style={{ marginRight: '20px' }}><strong>{admin?.adminName}</strong></span>
                 <NavLink onClick={handleLogout}>
                     <FaPowerOff color='red' />
                 </NavLink>
