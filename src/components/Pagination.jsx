@@ -37,21 +37,21 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   getPageNumbers();
 
   return (
-    <nav aria-label="Page navigation example">
+    <div style={{padding:'5px'}} aria-label="Page navigation example">
       <ul className="pagination">
-        <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+        <li style={{padding:'5px'}} className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
           <button className="page-link" onClick={() => onPageChange(currentPage - 1)}>Previous</button>
         </li>
         {pageNumbers.map((number, index) => (
-          <li key={index} className={`page-item ${number === currentPage ? 'active' : ''}`}>
+          <li style={{padding:'5px'}} key={index} className={`page-item ${number === currentPage ? 'active' : ''}`}>
             <button className="page-link" onClick={() => typeof number === 'number' && onPageChange(number)}>{number}</button>
           </li>
         ))}
-        <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+        <li style={{padding:'5px'}} className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
           <button className="page-link" onClick={() => onPageChange(currentPage + 1)}>Next</button>
         </li>
       </ul>
-    </nav>
+    </div>
   );
 };
 
