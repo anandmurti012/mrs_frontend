@@ -669,11 +669,11 @@ const ConfirmedBooking = () => {
             </tbody>
           </table>
               {/* pagination */}
-              <Pagination
+              {/* <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
                 onPageChange={handlePageChange}
-              />
+              /> */}
         </div>
       )}
 
