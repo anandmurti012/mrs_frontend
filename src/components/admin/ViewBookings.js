@@ -5,6 +5,8 @@ import "react-toastify/dist/ReactToastify.css";
 import "./ViewBookings.css"; // Add your CSS styles here
 import { useSelector } from 'react-redux';
 import { Button, InputGroup } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
@@ -126,7 +128,7 @@ const ViewBookings = ({ fetchAppointments }) => {
       setLoading(true);
       setIsPageLoading(true)
       await axios.get(
-        `${process.env.REACT_APP_APIURL}/api/bookings/?searchTerm=${searchTerm}&status=&selectedDate=${selectedDate}&selectedDoctor=${selectedDoctor}&page=${page ? page : 1}`, {
+        `${process.env.REACT_APP_APIURL}/api/bookings/?searchTerm=${searchTerm}&selectedDate=${selectedDate}&selectedDoctor=${selectedDoctor}&page=${page ? page : 1}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': token
@@ -250,13 +252,19 @@ const ViewBookings = ({ fetchAppointments }) => {
         {/* Search panel */}
         <div className="d-flex flex-row align-items-center">
           <div className="col-sm-12 col-lg-3 mb-2">
-            <input
-              type="search"
-              onChange={searchInput}
-              placeholder="Name / Booking Id / Mobile"
-              className="form-control"
-            />
+            <div className="input-group">
+              <input
+                type="search"
+                onChange={searchInput}
+                placeholder="Name / Booking Id / Mobile"
+                className="form-control"
+              />
+              <span className="input-group-text">
+                <FontAwesomeIcon icon={faSearch} className="cancel-icon" />
+              </span>
+            </div>
           </div>
+
 
           <div className="col-sm-12 col-lg-3 mb-2 ms-3">
             <select
@@ -294,11 +302,11 @@ const ViewBookings = ({ fetchAppointments }) => {
               <table style={{ width: "100%" }}>
                 <thead>
                   <tr>
-                    <th style={{ width: "8%" }} data-title="Patient's Name">
-                      Name
+                    <th style={{ width: "8%" }} data-title="Booking Id">
+                      Booking Id
                     </th>
                     <th style={{ width: "8%" }} data-title="Patient's Name">
-                      Booking Id
+                      Name
                     </th>
                     <th style={{ width: "5%" }} data-title="Age">
                       Age
@@ -327,10 +335,10 @@ const ViewBookings = ({ fetchAppointments }) => {
                   {bookings.length > 0 ? (
                     bookings.map((booking) => (
                       <tr key={booking?.id} >
+                        <td>{booking?.bookingId}</td>
                         <td onClick={() => openPopup(booking)} style={{ cursor: "pointer", color: "#007BFF" }}>
                           <strong>{booking?.name}</strong>
                         </td>
-                        <td>{booking?.bookingId}</td>
                         <td>{booking?.age}</td>
                         <td>{booking?.phone}</td>
                         <td>{booking?.email}</td>

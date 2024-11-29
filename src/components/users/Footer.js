@@ -36,7 +36,7 @@ const Footer = () => {
 
       {/* Right-aligned developer info */}
       <div className="developer-info">
-        <p>Developed by Software Company Pvt. Ltd.</p>
+        <p>Developed by Paansuli services.</p>
       </div>
 
       {/* Centered copyright text */}

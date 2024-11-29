@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { ToastContainer, toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
 import './adddoctors.css';
 
@@ -11,12 +12,12 @@ const AddDoctorsForm = () => {
     const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const [isPasscodeModalOpen, setIsPasscodeModalOpen] = useState(false);
     const [passcode, setPasscode] = useState('');
-
+    const admin = useSelector((state) => state.doctor.user);
     const openPasscodeModal = () => setIsPasscodeModalOpen(true);
     const closePasscodeModal = () => setIsPasscodeModalOpen(false);
 
     const handlePasscodeSubmit = () => {
-        if (passcode === '0000') {
+        if (passcode === admin?.passCode) {
             // Close modal and submit the form if passcode matches
             closePasscodeModal();
             formik.handleSubmit();

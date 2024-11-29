@@ -1,4 +1,4 @@
- // import React, { useState, useEffect } from 'react';
+// import React, { useState, useEffect } from 'react';
 // import axios from 'axios';
 // import { ToastContainer, toast } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
@@ -219,12 +219,13 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleCheck, faCancel } from '@fortawesome/free-solid-svg-icons';
+import { faCircleCheck, faCancel, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { InputGroup } from 'react-bootstrap';
 // import dayjs from 'dayjs';
 import DatePicker from 'react-datepicker';
 import './ViewBookings.css'; // Add your CSS styles here
 import { useSelector } from 'react-redux';
+import Pagination from "../Pagination";
 
 const ConfirmedBooking = () => {
   const [bookings, setBookings] = useState([]);
@@ -242,7 +243,16 @@ const ConfirmedBooking = () => {
   const [selectedDoctor, setSelectedDoctor] = useState(""); // To store selected doctor
   const [status, setStatus] = useState("");
   const auth = useSelector((state) => state.doctor);
+  const admin = useSelector((state) => state.doctor.user);
   const token = auth.token
+  
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    fetchBookings(page)
+  }
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -381,6 +391,7 @@ const ConfirmedBooking = () => {
       <h3 class="section-title"><strong>Doctor's Details</strong></h3>
       <div class="details">
         <p> Doctor:  ${selectedBooking.doctor}</p>
+        <p> Consultation fees:  ${selectedBooking.fees}</p>
          
         <p> Day: ${selectedBooking.day || "N/A"}</p>
         <p> Appointment Schedule:  ${selectedBooking.timeSlot
@@ -419,7 +430,6 @@ const ConfirmedBooking = () => {
   const handleDateChange = (e) => {
     setSelectedDate(e.target.value);
   };
-
   const handleCancel = async (bookingId) => {
     try {
       await axios.put(
@@ -455,11 +465,11 @@ const ConfirmedBooking = () => {
 
 
 
-  const fetchBookings = async () => {
+  const fetchBookings = async (page) => {
     try {
       setLoading(false);
       const res = await axios.get(
-        `${process.env.REACT_APP_APIURL}/api/confirmBookings/?searchTerm=${searchTerm}&status=${status}&selectedDate=${selectedDate}}&selectedDoctor=${selectedDoctor}`, {
+        `${process.env.REACT_APP_APIURL}/api/confirmBookings/?searchTerm=${searchTerm}&status=${status}&selectedDate=${selectedDate}&selectedDoctor=${selectedDoctor}&page=${page ? page : 1}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': token
@@ -470,7 +480,7 @@ const ConfirmedBooking = () => {
 
       // Set the sorted bookings
       setBookings(sortedBookings);
-
+      setTotalPages(res.data.totalPages)
     } catch (error) {
       toast.error("Failed to load bookings");
       setLoading(false);
@@ -542,7 +552,7 @@ const ConfirmedBooking = () => {
   };
 
   const handlePasscodeSubmit = () => {
-    if (passcode === "0000") {
+    if (passcode === admin?.passCode) {
       // Replace '1234' with the actual passcode
 
       if (actionType === "cancel") {
@@ -564,13 +574,19 @@ const ConfirmedBooking = () => {
         <div style={{ overflowX: 'auto' }}>
           <div className="d-flex flex-row align-items-center">
             <div className="col-sm-12 col-lg-3 mb-2">
-              <input
-                type="search"
-                onChange={searchInput}
-                placeholder="Name / Email / Mobile"
-                className="form-control"
-              />
+              <div className="input-group">
+                <input
+                  type="search"
+                  onChange={searchInput}
+                  placeholder="Name / Mobile / Booking Id"
+                  className="form-control"
+                />
+                <span className="input-group-text">
+                  <FontAwesomeIcon icon={faSearch} className="cancel-icon" />
+                </span>
+              </div>
             </div>
+
 
             <div className="col-sm-12 col-lg-3 mb-2 ms-3">
               <select className="form-select" onChange={handleStatusChange}>
@@ -590,48 +606,50 @@ const ConfirmedBooking = () => {
                 <option value="">Select Doctor</option>
                 {doctors.map((doctor) => (
                   <option key={doctor.id} value={doctor.name}>
-                    {doctor.name}-{doctor.specialization}
-                    
+                    {doctor.name}-({doctor.specialization})
+
                   </option>
                 ))}
               </select>
             </div>
             <div>
-              <InputGroup className="mb-2 ms-3">
-                <input
-                  type="date"
-                  value={selectedDate} // Use 'value' for controlled components
-                  onChange={handleDateChange} // Handle the change event
-                  className="form-control"
-                  placeholder="Select Date" // Use 'placeholder' for type="date"
-                />
-              </InputGroup>
+            <InputGroup className="mb-2 ms-3">
+              <input
+                type="date"
+                value={selectedDate} // Use 'value' for controlled components
+                onChange={handleDateChange} // Handle the change event
+                className="form-control"
+                placeholder="Select Date" // Use 'placeholder' for type="date"
+              />
+            </InputGroup>
 
             </div>
           </div>
 
-          <table style={{ width: '100%', }}>
+          <table style={{ width: '100%' }}>
             <thead>
               <tr>
-                <th style={{ width: '7%' }} data-title="Patient's Name">Name</th>
+                <th data-title="Booking Id">Booking Id</th>
+                <th data-title="Patient's Name">Name</th>
                 {/* <th style={{ width: '5%' }} data-title="Age">Age</th> */}
-                <th style={{ width: '7%' }} data-title="Phone No.">Phone</th>
-                <th style={{ width: '7%' }} data-title="Email Address">Email</th>
+                <th data-title="Phone No.">Phone</th>
+                {/* <th style={{ width: '7%' }} data-title="Email Address">Email</th> */}
                 {/* <th style={{ width: '5%' }} data-title="Gender">Gender</th> */}
-                <th style={{ width: '8%' }} data-title="Assigned Doctor">Doctor</th>
-                <th style={{ width: '7%' }} data-title="Selected Day">Day</th>
-                <th style={{ width: '8%' }} data-title="Time Slot">Appointment</th>
-                <th style={{ width: '7%' }} data-title="status">Status</th>
+                <th data-title="Assigned Doctor">Doctor</th>
+                <th data-title="Selected Day">Day</th>
+                <th data-title="Time Slot">Appointment</th>
+                <th data-title="status">Status</th>
               </tr>
             </thead>
             <tbody>
               {bookings.length > 0 ? (
                 bookings.map((booking) => (
                   <tr key={booking.id} onClick={() => openPopup(booking)}>
+                    <td style={{ color: '#0751be' }}><strong>{booking.bookingId}</strong></td>
                     <td style={{ cursor: 'pointer', color: '#007BFF' }}><strong>{booking.name}</strong></td>
                     {/* <td>{booking.age}</td> */}
                     <td>{booking.phone}</td>
-                    <td>{booking.email}</td>
+                    {/* <td>{booking.email}</td> */}
                     {/* <td>{booking.gender}</td> */}
                     <td>{booking.doctor}</td>
                     <td>{booking.day || 'N/A'}</td>
@@ -650,6 +668,12 @@ const ConfirmedBooking = () => {
               )}
             </tbody>
           </table>
+              {/* pagination */}
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
         </div>
       )}
 
@@ -730,6 +754,9 @@ const ConfirmedBooking = () => {
                     <div className="col-md-4">
                       <strong>Doctor:</strong> {selectedBooking.doctor}
                     </div>
+                    <div className="col-md-4 mt-3">
+                      <strong>Consultation Fees:</strong> {selectedBooking.fees}
+                    </div>
                     <div className="row odd-row">
                       <div className="col-md-12 mt-3">
                         <strong>Address:</strong> {selectedBooking.address}
@@ -751,7 +778,7 @@ const ConfirmedBooking = () => {
                     </div>
                   </div>
                   <div className="row odd-row">
-                    <div className="col-md-6">
+                    <div className="col-md-8">
                       <strong>Booking Time:</strong> {formatTimestamp(selectedBooking.timeStamp)}
                     </div>
                   </div>

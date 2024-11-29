@@ -403,6 +403,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, Button, Form } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
+
 import './ViewDoctors.css';
 
 const ViewDoctors = () => {
@@ -413,6 +415,7 @@ const ViewDoctors = () => {
   const [showPasscodeModal, setShowPasscodeModal] = useState(false);
   const [passcode, setPasscode] = useState('');
   const [doctorToToggle, setDoctorToToggle] = useState(null);
+  const admin = useSelector((state) => state.doctor.user);
 
   useEffect(() => {
     fetchDoctors();
@@ -478,7 +481,7 @@ const ViewDoctors = () => {
   };
 
   const handlePasscodeSubmit = () => {
-    if (passcode === '0000') {
+    if (passcode === admin?.passCode) {
       toggleDoctorStatus();
     } else {
       toast.error('Invalid passcode');
