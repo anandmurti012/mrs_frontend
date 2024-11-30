@@ -164,7 +164,7 @@ const ViewBookings = ({ fetchAppointments }) => {
     // Cleanup the timeout if the component unmounts or dependencies change before the debounce time
     return () => clearTimeout(debounceTimeout);
   }, [searchTerm, selectedDate, status, selectedDoctor]); // Re-run when any of these change
-
+ 
   const openPopup = (booking) => {
     setSelectedBooking(booking);
     setIsPopupOpen(true);
@@ -199,16 +199,16 @@ const ViewBookings = ({ fetchAppointments }) => {
   };
 
   // Update the debounced search term after a delay
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      filterData(0);
-    }, 500); // Delay in milliseconds (e.g., 300ms)
+  // useEffect(() => {
+  //   const handler = setTimeout(() => {
+  //     filterData(0);
+  //   }, 500); // Delay in milliseconds (e.g., 300ms)
 
-    // Cleanup function to clear the timeout if searchTerm changes
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [searchTerm, selectedDate, status]);
+  //   // Cleanup function to clear the timeout if searchTerm changes
+  //   return () => {
+  //     clearTimeout(handler);
+  //   };
+  // }, [searchTerm, selectedDate, status]);
 
   const searchInput = (e) => {
     setSearchTerm(e.target.value);
@@ -441,11 +441,11 @@ const ViewBookings = ({ fetchAppointments }) => {
                     </div>
                   </div>
                   <div className="row odd-row">
-                    <div className="col-md-12 mt-3">
+                    <div className="col-md-12">
                       <strong>Address:</strong> {selectedBooking?.address}
                     </div>
                   </div>
-                  <div className="row mb-3 even-row">
+                  <div className="row mb-3 even-row mt-3">
                     <div className="col-md-3">
                       <strong>Day:</strong> {selectedBooking?.day || "N/A"}
                     </div>
@@ -460,7 +460,7 @@ const ViewBookings = ({ fetchAppointments }) => {
                     </div>
                   </div>
                   <div className="row odd-row">
-                    <div className="col-md-6">
+                    <div className="col-md-8">
                       <strong>Booking Time:</strong>{" "}
                       {formatTimestamp(selectedBooking?.timeStamp)}
                     </div>

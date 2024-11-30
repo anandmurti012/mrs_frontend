@@ -9,13 +9,13 @@ const Footer = () => {
       {/* Contact section */}
       <div className="contact-info">
         <h3>Contact Us</h3>
-        <p>Email: info@clinic.com</p>
-        <p>Phone: +1 234 567 890</p>
-        <p>Address: 123 Clinic St, Health City, HC 12345</p>
+        <p>Email:  Kolkata@mrshospital.org</p>
+        <p>Phone: 033 2274 4726/ 2274 3725</p>
+        <p>Address: 225 & 227, Rabindra Sarani; Kolkata-700007</p>
       </div>
 
       {/* Social media links */}
-      <div className="social-media">
+      {/* <div className="social-media">
         <h3>Follow Us</h3>
         <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">
           <FontAwesomeIcon icon={faFacebook} className="social-icon" />
@@ -32,7 +32,7 @@ const Footer = () => {
         <a href="https://www.whatsapp.com" target="_blank" rel="noopener noreferrer">
           <FontAwesomeIcon icon={faWhatsapp} className="social-icon" />
         </a>
-      </div>
+      </div> */}
 
       {/* Right-aligned developer info */}
       <div className="developer-info">

@@ -132,7 +132,7 @@ const UserForm = () => {
     const newErrors = {};
     if (!formData.name) newErrors.name = 'Name is required';
     if (!formData.address) newErrors.address = 'Address is required';
-    if (!formData.phone || !/^[0-9]{10}$/.test(formData.phone)) newErrors.phone = 'Valid 10-digit phone number is required';
+    if (!formData.phone) newErrors.phone = ' phone number is required';
     // if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Valid email is required';
     if (!formData.gender) newErrors.gender = 'Gender is required';
     if (!formData.age) newErrors.age = 'Enter Age.';
@@ -272,7 +272,7 @@ const UserForm = () => {
 
               <div className="form-group">
                 <label htmlFor="phone"><span className='text-style'><FontAwesomeIcon icon={faPhone} />&nbsp;&nbsp; Phone</span></label>
-                <input id="phone" name="phone" placeholder='Enter your valid Contact Number' value={formData.phone} onChange={handleChange} />
+                <input id="phone" name="phone" placeholder='Enter your Contact Number' value={formData.phone} onChange={handleChange} />
                 {errors.phone && <span className="error-message">{errors.phone}</span>}
               </div>
             </div>

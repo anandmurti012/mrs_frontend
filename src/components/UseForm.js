@@ -25,7 +25,6 @@ const UserForm = () => {
     // Get hours, minutes, and seconds
     let hours = date.getHours();
     const minutes = String(date.getMinutes()).padStart(2, "0");
-    const seconds = String(date.getSeconds()).padStart(2, "0");
   
     // Determine AM/PM
     const ampm = hours >= 12 ? "PM" : "AM";
@@ -34,7 +33,7 @@ const UserForm = () => {
     hours = hours % 12 || 12; // If hours is 0, set it to 12
   
     // Return formatted date and time
-    return `${year}-${month}-${day} [${hours}:${minutes}:${seconds} ${ampm}]`;
+    return `${day}-${month}-${year} [${hours}:${minutes} ${ampm}]`;
   }
 
   const [formData, setFormData] = useState({
@@ -155,11 +154,11 @@ const UserForm = () => {
     if (!formData.name) newErrors.name = 'Name is required';
     if (!formData.address) newErrors.address = 'Address is required';
     if (!formData.phone) {
-      newErrors.phone = '';
+      newErrors.phone = 'phone number is required';
     }
     if (!formData.gender) newErrors.gender = 'Gender is required';
-    if (!formData.age || formData.age < 1 || formData.age > 100) {
-      newErrors.age = 'Age must be between 18 and 100';
+    if (!formData.age) {
+      newErrors.age = '';
     }
     if (!formData.doctor) newErrors.doctor = 'Doctor selection is required';
     if (!formData.day) newErrors.day = 'Day selection is required';
