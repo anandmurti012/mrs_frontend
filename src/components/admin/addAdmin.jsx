@@ -23,18 +23,10 @@ const AddAdmin = () => {
     const openPasscodeModal = () => setIsPasscodeModalOpen(true);
     const closePasscodeModal = () => setIsPasscodeModalOpen(false);
 
+    const [isLoadingButton, setisLoadingButton] = useState(false)
+
     const handlePasscodeSubmit = () => {
-        closePasscodeModal();
         adminFormik.handleSubmit();
-
-
-        // if (passcode === adminFormik.values.passCode) {
-        //     // Close modal and submit the form if passcode matches
-        //     closePasscodeModal();
-        //     adminFormik.handleSubmit();
-        // } else {
-        //     toast.error('Invalid passcode');
-        // }
     };
 
     const adminFormik = useFormik({
@@ -60,19 +52,23 @@ const AddAdmin = () => {
         }),
         onSubmit: async (values) => {
             try {
-                await axios.post(`${process.env.REACT_APP_APIURL}/api/admins/`, {values,adminPasscode:passcode}, {
+                setisLoadingButton(true)
+                await axios.post(`${process.env.REACT_APP_APIURL}/api/admins/`, { values, adminPasscode: passcode }, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': token
                     }
                 }).then(response => {
                     toast.success('Admin added successfully!');
+                    setisLoadingButton(false)
+                    closePasscodeModal();
                     adminFormik.resetForm();
                 }).catch(error => {
+                    setisLoadingButton(false)
                     toast.error(error.response.data.msg || error.message);
                 })
-
             } catch (error) {
+                setisLoadingButton(false)
                 toast.error('Error adding admin');
             }
         },
@@ -80,9 +76,9 @@ const AddAdmin = () => {
     return (
         <div>
             <ToastContainer />
-            <form className="admin-form" onSubmit={adminFormik.handleSubmit}>
+            <form className="admin-form row" onSubmit={adminFormik.handleSubmit}>
                 {/* Admin's form fields */}
-                <div className="form-group">
+                <div className="col-12 col-sm-12 col-md-4 mt-2">
                     <label>Admin's Name:</label>
                     <input
                         type="text"
@@ -96,7 +92,7 @@ const AddAdmin = () => {
                         <span className="error">{adminFormik.errors.adminName}</span>
                     )}
                 </div>
-                <div className="form-group">
+                <div className="col-12 col-sm-12 col-md-4 mt-2">
                     <label>Email ID:</label>
                     <input
                         type="email"
@@ -110,7 +106,7 @@ const AddAdmin = () => {
                         <span className="error">{adminFormik.errors.emailId}</span>
                     )}
                 </div>
-                <div className="form-group">
+                <div className="col-12 col-sm-12 col-md-4 mt-2">
                     <label>Address:</label>
                     <input
                         type="text"
@@ -124,7 +120,7 @@ const AddAdmin = () => {
                         <span className="error">{adminFormik.errors.address}</span>
                     )}
                 </div>
-                <div className="form-group">
+                <div className="col-12 col-sm-12 col-md-4 mt-2">
                     <label>Phone No.:</label>
                     <input
                         type="text"
@@ -138,7 +134,7 @@ const AddAdmin = () => {
                         <span className="error">{adminFormik.errors.phoneNo}</span>
                     )}
                 </div>
-                <div className="form-group">
+                <div className="col-12 col-sm-12 col-md-4 mt-2">
                     <label>Pass Code</label>
                     <div className="password-input">
                         <input
@@ -158,7 +154,7 @@ const AddAdmin = () => {
                     )}
                 </div>
 
-                <div className="form-group">
+                <div className="col-12 col-sm-12 col-md-4 mt-2">
                     <label>Password:</label>
                     <div className="password-input">
                         <input
@@ -169,7 +165,7 @@ const AddAdmin = () => {
                             value={adminFormik.values.password}
                             placeholder="Enter password"
                         />
-                         <span onClick={() => setShowPassword(!showPassword)}>
+                        <span onClick={() => setShowPassword(!showPassword)}>
                             {showPassword ? <FaEyeSlash /> : <FaEye />}
                         </span>
                     </div>
@@ -178,7 +174,7 @@ const AddAdmin = () => {
                     )}
                 </div>
 
-                <div className="form-group">
+                <div className="col-12 col-sm-12 col-md-4 mt-2">
                     <label>Confirm Password:</label>
                     <div className="password-input">
                         <input
@@ -197,72 +193,83 @@ const AddAdmin = () => {
                         <span className="error">{adminFormik.errors.confirmPassword}</span>
                     )}
                 </div>
-                <button type="button" onClick={openPasscodeModal}>Add Admin</button>
+
+                <div>
+                    <button type="button" onClick={openPasscodeModal}>Add Admin</button>
+                </div>
             </form>
             {/* Passcode Modal */}
             {isPasscodeModalOpen && (
-  <div
-    className="modal fade show"
-    style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-    tabIndex="-1"
-    role="dialog"
-    aria-labelledby="passcodeModalLabel"
-    aria-hidden="true"
-  >
-    <div
-      className="modal-dialog"
-      style={{
-        maxWidth: "15%", // Default width on larger screens
-        margin: "1.75rem auto", // Center the modal horizontally
-        marginTop: "200px", // Adds margin from the top of the page
-      }}
-    >
-      <div className="modal-content">
-        <div className="modal-header">
-          <h5 className="modal-title">Enter Passcode</h5>
-          <button
-            type="button"
-            className="close"
-            onClick={closePasscodeModal}
-            aria-label="Close"
-            style={{
-              marginLeft: "auto",
-              width: "40px",
-              height: "40px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: "#0ccaf0",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            <span aria-hidden="true" style={{ fontSize: "1.5rem" }}>
-              &times;
-            </span>
-          </button>
-        </div>
-        <div className="modal-body">
-          <input
-            type="password"
-            value={passcode}
-            onChange={(e) => setPasscode(e.target.value)}
-            placeholder="Enter passcode"
-            className="form-control"
-          />
-        </div>
-        <div className="modal-footer">
-          <button className="btn btn-primary" onClick={handlePasscodeSubmit}>
-            Submit
-          </button>
-          <button className="btn btn-secondary" onClick={closePasscodeModal}>
-            Cancel
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
+                <div
+                    className="modal fade show"
+                    style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+                    tabIndex="-1"
+                    role="dialog"
+                    aria-labelledby="passcodeModalLabel"
+                    aria-hidden="true"
+                >
+                    <div
+                        className="modal-dialog"
+                        style={{
+                            margin: "1.75rem auto", // Center the modal horizontally
+                            marginTop: "200px", // Adds margin from the top of the page
+                        }}
+                    >
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Enter Passcode</h5>
+                                <button
+                                    type="button"
+                                    className="close"
+                                    onClick={closePasscodeModal}
+                                    aria-label="Close"
+                                    style={{
+                                        marginLeft: "auto",
+                                        width: "40px",
+                                        height: "40px",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        background: "#0ccaf0",
+                                        border: "none",
+                                        cursor: "pointer",
+                                    }}
+                                >
+                                    <span aria-hidden="true" style={{ fontSize: "1.5rem" }}>
+                                        &times;
+                                    </span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <input
+                                    type="password"
+                                    value={passcode}
+                                    onChange={(e) => setPasscode(e.target.value)}
+                                    placeholder="Enter passcode"
+                                    className="form-control"
+                                />
+                            </div>
+                            <div className="modal-footer">
+                                {
+                                    isLoadingButton ?
+                                        <button className="btn btn-primary">
+                                            <div class="spinner-border" role="status" style={{ height: 15, width: 15 }}>
+                                                <span class="sr-only">Loading...</span>
+                                            </div>  Submit
+                                        </button>
+                                        :
+                                        <button className="btn btn-primary" onClick={handlePasscodeSubmit}>
+                                            Submit
+                                        </button>
+                                }
+                                <button className="btn btn-secondary" onClick={closePasscodeModal}>
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
 
 

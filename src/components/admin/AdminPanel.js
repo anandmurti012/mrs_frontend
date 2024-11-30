@@ -5,14 +5,17 @@ import 'react-toastify/dist/ReactToastify.css';
 import './AdminPanel.css';
 import AddDoctorsForm from './AddDoctorsForm';
 import AddAdmin from './addAdmin';
-import ViewBookings from './ViewBookings';
 import ViewDoctors from './ViewDoctors';
-import Confirmed from './Confirmed';
 import TopNav from '../TopNav';
+import ViewBookings from './bookings/ViewBookings';
+import ConfirmBookings from './bookings/ConfirmBookings';
+import { useSelector } from 'react-redux';
 
 const AdminPanel = () => {
+    const admin = useSelector((state) => state.doctor.user);
+
     const [activeTab, setActiveTab] = useState('Provisional Booking');
-    
+
 
 
     // Logout function
@@ -23,7 +26,7 @@ const AdminPanel = () => {
             case 'Provisional Booking':
                 return <ViewBookings />;
             case 'Confirmed Booking':
-                return <Confirmed />;
+                return <ConfirmBookings />;
             case 'View Doctors':
                 return <ViewDoctors />;
             case 'Add Doctors':
@@ -43,7 +46,7 @@ const AdminPanel = () => {
                     Dashboard
                 </h3>
 
-                <nav style={{marginTop:'20px'}}>
+                <nav style={{ marginTop: '20px' }}>
                     <ul>
                         <li className={activeTab === 'Provisional Booking' ? 'active' : ''} onClick={() => setActiveTab('Provisional Booking')}>
                             Provisional Booking
@@ -57,17 +60,20 @@ const AdminPanel = () => {
                         <li className={activeTab === 'Add Doctors' ? 'active' : ''} onClick={() => setActiveTab('Add Doctors')}>
                             Add Doctors
                         </li>
-                        <li className={activeTab === 'Make an Admin' ? 'active' : ''} onClick={() => setActiveTab('Make an Admin')}>
-                            Create Admin
-                        </li>
+                        {admin?.type === 'superAdmin' && (
+                            <li className={activeTab === 'Make an Admin' ? 'active' : ''} onClick={() => setActiveTab('Make an Admin')}>
+                                Create Admin
+                            </li>
+                        )}
+
                     </ul>
                 </nav>
             </aside>
 
             <main style={{ width: '80%', height: '100vh', background: '#fff', overflow: 'auto' }}>
                 <TopNav activeTab={activeTab} />
-                
-                <div style={{ padding: '10px 20px 50px 20px' }} >
+
+                <div style={{ padding: '10px' }} >
                     {renderContent()}
                 </div>
 

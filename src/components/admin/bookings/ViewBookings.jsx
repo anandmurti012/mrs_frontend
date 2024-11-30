@@ -2,16 +2,16 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "./ViewBookings.css"; // Add your CSS styles here
+import "./styles/ViewBookings.css"; // Add your CSS styles here
 import { useSelector } from 'react-redux';
-import { Button, InputGroup } from 'react-bootstrap';
+import { Button, InputGroup, NavLink } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
-import Pagination from "../Pagination";
-import Loading from "../Loading";
+import Pagination from "../../Pagination";
+import Loading from "../../Loading";
 
 const ViewBookings = ({ fetchAppointments }) => {
   //-------------------- Dev By Amit --------------------
@@ -34,7 +34,6 @@ const ViewBookings = ({ fetchAppointments }) => {
   // const [searchDoctorTerm, setSearchDoctorTerm] = useState("");
   const [selectedDoctor, setSelectedDoctor] = useState(""); // To store selected doctor
 
-  const [status, setStatus] = useState("");
   const auth = useSelector((state) => state.doctor);
 
 
@@ -43,7 +42,6 @@ const ViewBookings = ({ fetchAppointments }) => {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    fetchBookings(page)
   }
 
 
@@ -54,14 +52,6 @@ const ViewBookings = ({ fetchAppointments }) => {
   const handleDateChange = (e) => {
     setSelectedDate(e.target.value);
   };
-
-  const handleFetch = () => {
-    if (selectedDate) {
-      const formattedDate = dayjs(selectedDate).format('YYYY-MM-DD');
-      fetchAppointments(formattedDate);  // This will now call the parent function?
-    }
-  };
-
 
   const formatTimeTo12Hour = (time) => {
     if (!time || typeof time !== "string") return "N/A";
@@ -91,23 +81,12 @@ const ViewBookings = ({ fetchAppointments }) => {
         `${process.env.REACT_APP_APIURL}/api/bookings/${bookingId}/confirm`
       );
       toast.success("Booking confirmed successfully!");
-      fetchBookings();
+      fetchBookings(searchTerm, selectedDate, selectedDoctor, currentPage);
     } catch (error) {
       toast.error("Error confirming booking");
     }
   };
 
-  // const handleCancel = async (bookingId) => {
-  //   try {
-  //     await axios.put(
-  //       `${process.env.REACT_APP_APIURL}/api/bookings/${bookingId}/toBeDeleted`
-  //     );
-  //     toast.success("Booking canceled successfully!");
-  //     fetchBookings(searchTerm, status, selectedDate, status);
-  //   } catch (error) {
-  //     toast.error("Error canceling booking");
-  //   }
-  // };
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -123,12 +102,12 @@ const ViewBookings = ({ fetchAppointments }) => {
     fetchDoctors();
   }, []);
 
-  const fetchBookings = async (page) => {
+  const fetchBookings = async (searchTerm, selectedDate, selectedDoctor, currentPage) => {
     try {
       setLoading(true);
       setIsPageLoading(true)
       await axios.get(
-        `${process.env.REACT_APP_APIURL}/api/bookings/?searchTerm=${searchTerm}&selectedDate=${selectedDate}&selectedDoctor=${selectedDoctor}&page=${page ? page : 1}`, {
+        `${process.env.REACT_APP_APIURL}/api/bookings/?searchTerm=${searchTerm}&selectedDate=${selectedDate}&selectedDoctor=${selectedDoctor}&page=${currentPage}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': token
@@ -143,7 +122,7 @@ const ViewBookings = ({ fetchAppointments }) => {
         setTotalPages(res.data.totalPages)
       }).catch(error => {
         setIsPageLoading(false)
-        toast.error("Failed to load bookings");
+        toast.error(error.response?.data?.msg || error.message);
         setLoading(false);
       })
     } catch (error) {
@@ -158,13 +137,13 @@ const ViewBookings = ({ fetchAppointments }) => {
   useEffect(() => {
     // Debounce the search function
     const debounceTimeout = setTimeout(() => {
-      fetchBookings(searchTerm, selectedDate, status, selectedDoctor);
+      fetchBookings(searchTerm, selectedDate, selectedDoctor, currentPage);
     }, 666); // 6000 ms = 6 seconds
 
     // Cleanup the timeout if the component unmounts or dependencies change before the debounce time
     return () => clearTimeout(debounceTimeout);
-  }, [searchTerm, selectedDate, status, selectedDoctor]); // Re-run when any of these change
- 
+  }, [searchTerm, selectedDate, selectedDoctor, currentPage]); // Re-run when any of these change
+
   const openPopup = (booking) => {
     setSelectedBooking(booking);
     setIsPopupOpen(true);
@@ -198,183 +177,138 @@ const ViewBookings = ({ fetchAppointments }) => {
     }
   };
 
-  // Update the debounced search term after a delay
-  // useEffect(() => {
-  //   const handler = setTimeout(() => {
-  //     filterData(0);
-  //   }, 500); // Delay in milliseconds (e.g., 300ms)
-
-  //   // Cleanup function to clear the timeout if searchTerm changes
-  //   return () => {
-  //     clearTimeout(handler);
-  //   };
-  // }, [searchTerm, selectedDate, status]);
-
   const searchInput = (e) => {
     setSearchTerm(e.target.value);
-    // console.log(e.target.value)
-  };
-  // const searchDoctorInput = (e) => {
-  //   setSearchDoctorTerm(e.target.value);
-  //   // console.log(e.target.value)
-  // };
-  // const handleDateChange = (date) => {
-  //   setSelectedDate(date);
-  // };
-  const handleStatusChange = (e) => {
-    setStatus(e.target.value);
-  };
-
-  const filterData = async (page) => {
-    try {
-      setIsLoading()
-        // await axios.get(`${process.env.REACT_APP_APIURL}/api/admins/get-users?page=${page}&searchTerm=${searchTerm}&subscriptionType=${subscriptionType}&status=${status}`, {
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //     'Authorization': token
-        //   }
-        // })
-        .then((response) => {
-          console.log(response.data);
-        })
-        .catch((error) => {
-          console.error("There was an error fetching the data:", error);
-        });
-    } catch (error) {
-      console.log("APi call error", error);
-    }
   };
 
   return (
     <div>
       <ToastContainer />
-      <div style={{}}>
-        {/* Search panel */}
-        <div className="d-flex flex-row align-items-center">
-          <div className="col-sm-12 col-lg-3 mb-2">
-            <div className="input-group">
-              <input
-                type="search"
-                onChange={searchInput}
-                placeholder="Name / Booking Id / Mobile"
-                className="form-control"
-              />
-              <span className="input-group-text">
-                <FontAwesomeIcon icon={faSearch} className="cancel-icon" />
-              </span>
-            </div>
-          </div>
-
-
-          <div className="col-sm-12 col-lg-3 mb-2 ms-3">
-            <select
-              onChange={(e) => setSelectedDoctor(e.target.value)}
+      {/* Search panel */}
+      <div className="d-flex flex-row align-items-center">
+        <div className="col-sm-12 col-lg-3 mb-2">
+          <div className="input-group">
+            <input
+              type="search"
+              onChange={searchInput}
+              placeholder="Name / Booking Id / Mobile"
               className="form-control"
-              value={selectedDoctor}
-            >
-              <option value="">Select Doctor</option>
-              {doctors.map((doctor) => (
-                <option key={doctor.id} value={doctor.name}>
-                  {doctor.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <InputGroup className="mb-2 ms-3">
-              <input
-                type="date"
-                value={selectedDate} // Use 'value' for controlled components
-                onChange={handleDateChange} // Handle the change event
-                className="form-control"
-                placeholder="Select Date" // Use 'placeholder' for type="date"
-              />
-            </InputGroup>
-
+            />
+            <span className="input-group-text">
+              <FontAwesomeIcon icon={faSearch} className="cancel-icon" />
+            </span>
           </div>
         </div>
 
-        {
-          isPageLoading ?
-            <Loading />
-            :
-            <>
-              <table style={{ width: "100%" }}>
-                <thead>
-                  <tr>
-                    <th style={{ width: "8%" }} data-title="Booking Id">
-                      Booking Id
-                    </th>
-                    <th style={{ width: "8%" }} data-title="Patient's Name">
-                      Name
-                    </th>
-                    <th style={{ width: "5%" }} data-title="Age">
-                      Age
-                    </th>
-                    <th style={{ width: "8%" }} data-title="Phone No.">
-                      Phone
-                    </th>
-                    <th style={{ width: "10%" }} data-title="Email Address">
-                      Email
-                    </th>
-                    <th style={{ width: "5%" }} data-title="Gender">
-                      Gender
-                    </th>
-                    <th style={{ width: "10%" }} data-title="Assigned Doctor">
-                      Doctor
-                    </th>
-                    <th style={{ width: "7%" }} data-title="Selected Day">
-                      Day
-                    </th>
-                    <th style={{ width: "10%" }} data-title="Time Slot">
-                      Appointment
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {bookings.length > 0 ? (
-                    bookings.map((booking) => (
-                      <tr key={booking?.id} >
-                        <td>{booking?.bookingId}</td>
-                        <td onClick={() => openPopup(booking)} style={{ cursor: "pointer", color: "#007BFF" }}>
-                          <strong>{booking?.name}</strong>
-                        </td>
-                        <td>{booking?.age}</td>
-                        <td>{booking?.phone}</td>
-                        <td>{booking?.email}</td>
-                        <td>{booking?.gender}</td>
-                        <td>{booking?.doctor}</td>
-                        <td>{booking?.day || "N/A"}</td>
-                        <td>
-                          {booking?.timeSlot
-                            ? booking?.timeSlot
-                              .split(" - ")
-                              .map((time) => formatTimeTo12Hour(time))
-                              .join(" - ")
-                            : "N/A"}
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="8">No bookings available</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-              {/* pagination */}
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-              />
-            </>
-        }
 
+        <div className="col-sm-12 col-lg-3 mb-2 ms-3">
+          <select
+            onChange={(e) => setSelectedDoctor(e.target.value)}
+            className="form-control"
+            value={selectedDoctor}
+          >
+            <option value="">Select Doctor</option>
+            {doctors.map((doctor) => (
+              <option key={doctor.id} value={doctor.name}>
+                {doctor.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <InputGroup className="mb-2 ms-3">
+            <input
+              type="date"
+              value={selectedDate} // Use 'value' for controlled components
+              onChange={handleDateChange} // Handle the change event
+              className="form-control"
+              placeholder="Select Date" // Use 'placeholder' for type="date"
+            />
+          </InputGroup>
 
-
-
+        </div>
+        
       </div>
+
+      {
+        isPageLoading ?
+          <Loading />
+          :
+          <div>
+            <table >
+              <thead>
+                <tr>
+                  <th data-title="Booking Id">
+                    Booking Id
+                  </th>
+                  <th data-title="Patient's Name">
+                    Name
+                  </th>
+                  <th data-title="Age">
+                    Age
+                  </th>
+                  <th data-title="Phone No.">
+                    Phone
+                  </th>
+                  <th data-title="Email Address">
+                    Email
+                  </th>
+                  <th data-title="Gender">
+                    Gender
+                  </th>
+                  <th data-title="Assigned Doctor">
+                    Doctor
+                  </th>
+                  <th data-title="Selected Day">
+                    Day
+                  </th>
+                  <th data-title="Time Slot">
+                    Appointment
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {bookings.length > 0 ? (
+                  bookings.map((booking) => (
+                    <tr key={booking?.id} >
+                      <td>{booking?.bookingId}</td>
+                      <td onClick={() => openPopup(booking)} style={{ cursor: "pointer", color: "#007BFF" }}>
+                        <strong>{booking?.name}</strong>
+                      </td>
+                      <td>{booking?.age}</td>
+                      <td>{booking?.phone}</td>
+                      <td>{booking?.email}</td>
+                      <td>{booking?.gender}</td>
+                      <td>{booking?.doctor}</td>
+                      <td>{booking?.day || "N/A"}</td>
+                      <td>
+                        {booking?.timeSlot
+                          ? booking?.timeSlot
+                            .split(" - ")
+                            .map((time) => formatTimeTo12Hour(time))
+                            .join(" - ")
+                          : "N/A"}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td>No bookings available</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+            {/* pagination */}
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </div>
+      }
+
+
+
 
 
       {/* Popup for booking details */}

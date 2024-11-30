@@ -3,15 +3,11 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { setDoctorDetails } from '../redux/doctorSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserDoctor, faUser, faAddressBook, faPhone, faEnvelope, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faAddressBook, faPhone, faEnvelope, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import './UseForm.css';
 import Footer from './users/Footer';
 import { useNavigate } from "react-router-dom";
-import AdminLogin from './admin/adminLogin';
-import './UseForm.css';
-
 
 const UserForm = () => {
   const dispatch = useDispatch();
@@ -21,17 +17,17 @@ const UserForm = () => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
     const day = String(date.getDate()).padStart(2, "0");
-  
+
     // Get hours, minutes, and seconds
     let hours = date.getHours();
     const minutes = String(date.getMinutes()).padStart(2, "0");
-  
+
     // Determine AM/PM
     const ampm = hours >= 12 ? "PM" : "AM";
-  
+
     // Convert hours to 12-hour format
     hours = hours % 12 || 12; // If hours is 0, set it to 12
-  
+
     // Return formatted date and time
     return `${day}-${month}-${year} [${hours}:${minutes} ${ampm}]`;
   }
@@ -44,7 +40,7 @@ const UserForm = () => {
     gender: '',
     age: '',
     doctor: '',
-    fees:'',
+    fees: '',
     day: '',
     timeSlot: [],
     addedBy: 'user', // Set to 'user' by default
@@ -60,7 +56,7 @@ const UserForm = () => {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [bookingData, setBookingData] = useState(null);
   const auth = useSelector((state) => state.doctor);
-  
+
   const token = auth.token
   const handleAdminLoginClick = () => {
     navigate("/adminLogin"); // Replace '/adminLogin' with the actual path to the login page
@@ -74,7 +70,7 @@ const UserForm = () => {
             "Content-Type": "application/json"
           }
         });
-        
+
         setDoctors(response.data);
       } catch (error) {
         console.error('Error fetching doctors:', error);
@@ -93,7 +89,7 @@ const UserForm = () => {
     const selectedDoctor = e.target.value;
     setFormData({ ...formData, doctor: selectedDoctor, day: '', timeSlot: '' });
     setTimeSlots([]);
-  
+
     if (selectedDoctor) {
       try {
         const response = await axios.get(`${process.env.REACT_APP_APIURL}/api/doctorAvailability/${selectedDoctor}`);
@@ -106,14 +102,14 @@ const UserForm = () => {
     } else {
       setAvailability([]);
     }
-  
+
     // Get the selected doctor's details
     const doctor = doctors?.find((doc) => doc.name === selectedDoctor);
     if (doctor) {
       setFormData({ ...formData, doctor: selectedDoctor, fees: doctor.fees });
     }
   };
-  
+
 
   const handleDayChange = (e) => {
     const selectedDay = e.target.value;
@@ -250,11 +246,11 @@ const UserForm = () => {
             <p><b>Address:</b> {bookingData.address}</p>
             <p><b>Phone no:</b> {bookingData.phone}</p>
             <p><b>Doctor's Name:</b> {bookingData.doctor}-({specialization})</p>
-            <p style={{backgroundColor:'rgb(252, 237, 162)'}}><b>Consultation fees:</b> <span style={{color:'teal'}}>₹{fees}</span> you need to pay at Counter</p>
-              <p style={{backgroundColor:'rgb(252, 237, 162)'}}><b>Booking Date & Time:</b> {formData.timeStamp}</p>
+            <p style={{ backgroundColor: 'rgb(252, 237, 162)' }}><b>Consultation fees:</b> <span style={{ color: 'teal' }}>₹{fees}</span> you need to pay at Counter</p>
+            <p style={{ backgroundColor: 'rgb(252, 237, 162)' }}><b>Booking Date & Time:</b> {formData.timeStamp}</p>
             <p><b>Consulting Time:</b> {formData.day}- [{bookingData.timeSlot.split(" - ")
               .map((time) => formatTimeTo12Hour(time))
-              .join(" - ")}]<br></br> (Nearest <span style={{color:'teal'}}><b>{formData.day}</b></span> from Booking Confirmation time)</p>
+              .join(" - ")}]<br></br> (Nearest <span style={{ color: 'teal' }}><b>{formData.day}</b></span> from Booking Confirmation time)</p>
             <p style={{ fontSize: '15px', color: 'red' }}>
               <strong>Note:</strong>
               <span style={{ color: 'green' }}> "Please take a screenshot", </span>

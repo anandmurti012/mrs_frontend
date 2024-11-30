@@ -1,67 +1,13 @@
-// import React from 'react'
-// import { FaPowerOff } from 'react-icons/fa';
-// import { Navigate, NavLink } from 'react-router-dom';
-// import { LogoutAction } from '../redux/doctorSlice';
-// import { useDispatch } from 'react-redux';
-
-// const TopNav = ({ activeTab }) => {
-//     const dispatch = useDispatch()
-
-//     const handleLogout = async () => {
-//         dispatch(LogoutAction())
-//         window.location.reload()
-//     }
-
-
-//     return (
-//         <div
-//             className='sticky-top'
-//             style={{
-//                 height: '50px',
-//                 boxShadow: "rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px",
-//                 background: '#fff',
-//                 display: 'flex',
-//                 alignItems: 'center',
-//                 justifyContent: 'space-between',
-//                 padding: '0px 20px'
-//             }}>
-//             <div>
-//                 <div className="active-tab-heading">
-//                     <h4>{activeTab}</h4>
-//                 </div>
-//             </div>
-//             <div>
-//             <Navigate to = '/adminForm'>
-//             <button style={{marginRight:'20px', marginBottom:'18px'}} className='btn btn-primary'>Book an Appointment</button>
-//             </Navigate>
-//            <span style={{marginRight:'20px'}} ><strong>Admin</strong></span>
-//                 <NavLink
-//                     onClick={handleLogout}
-//                 >
-//                     <FaPowerOff color='red' />
-//                     {/* FontAwesome power icon */}
-//                 </NavLink>
-//             </div>
-//         </div>
-//     )
-// }
-
-// export default TopNav
-
-//===========================//=======================//==================
 import React from 'react';
 import { FaPowerOff } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
-import { LogoutAction } from '../redux/doctorSlice';
-import { useDispatch,useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { persistor } from '../redux/store';
 
 const TopNav = ({ activeTab }) => {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const admin = useSelector((state) => state.doctor.user);
-    console.log("admin:::", admin);
 
     const handleLogout = async () => {
         persistor.purge().then(() => {
@@ -78,7 +24,7 @@ const TopNav = ({ activeTab }) => {
         <div
             className='sticky-top'
             style={{
-                height: '50px',
+                height: '55px',
                 boxShadow: "rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px",
                 background: '#fff',
                 display: 'flex',
@@ -86,10 +32,8 @@ const TopNav = ({ activeTab }) => {
                 justifyContent: 'space-between',
                 padding: '0px 20px'
             }}>
-            <div>
-                <div className="active-tab-heading">
-                    <h4>{activeTab}</h4>
-                </div>
+            <div className="active-tab-heading" style={{ marginTop: 8 }}>
+                <h4>{activeTab}</h4>
             </div>
             <div>
                 <button

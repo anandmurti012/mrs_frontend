@@ -5,8 +5,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import AdminPanel from './components/admin/AdminPanel';
 import { useSelector } from 'react-redux';
-import AdminLogin from './components/admin/adminLogin';
 import AdminForm from './components/admin/AdminForm';
+import AdminLogin from './components/admin/auth/adminLogin';
 
 
 function App() {
