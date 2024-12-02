@@ -4,7 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './AdminPanel.css';
 import AddDoctorsForm from './AddDoctorsForm';
-import AddAdmin from './addAdmin';
+import AddAdmin from './AddAdmin';
 import ViewDoctors from './ViewDoctors';
 import TopNav from '../TopNav';
 import ViewBookings from './bookings/ViewBookings';

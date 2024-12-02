@@ -13,6 +13,9 @@ const UserForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [isLoadingButton, setisLoadingButton] = useState(false)
+
+
   function formatDateTime(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
@@ -86,13 +89,14 @@ const UserForm = () => {
   const fees = doctor ? doctor.fees : 'Not Available';
 
   const handleDoctorChange = async (e) => {
-    const selectedDoctor = e.target.value;
-    setFormData({ ...formData, doctor: selectedDoctor, day: '', timeSlot: '' });
+    const selectedDoctorId = e.target.value;
+    console.log(selectedDoctorId)
+    setFormData({ ...formData, doctor: selectedDoctorId, day: '', timeSlot: '' });
     setTimeSlots([]);
 
-    if (selectedDoctor) {
+    if (selectedDoctorId) {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_APIURL}/api/doctorAvailability/${selectedDoctor}`);
+        const response = await axios.get(`${process.env.REACT_APP_APIURL}/api/doctorAvailability/${selectedDoctorId}`);
         setAvailability(response.data.availability || []);
       } catch (error) {
         console.error('Error fetching doctor availability:', error);
@@ -104,9 +108,9 @@ const UserForm = () => {
     }
 
     // Get the selected doctor's details
-    const doctor = doctors?.find((doc) => doc.name === selectedDoctor);
+    const doctor = doctors?.find((doc) => doc.name === selectedDoctorId);
     if (doctor) {
-      setFormData({ ...formData, doctor: selectedDoctor, fees: doctor.fees });
+      setFormData({ ...formData, doctor: selectedDoctorId, fees: doctor.fees });
     }
   };
 
@@ -129,16 +133,7 @@ const UserForm = () => {
     const formattedHours = hours % 12 || 12;
     return `${formattedHours}:${String(minutes).padStart(2, "0")} ${period}`;
   };
-  // const formatTimeTo12Hour = (time) => {
-  //   if (!time || typeof time !== 'string') return 'N/A';
 
-  //   const [hours, minutes] = time.split(':').map(Number);
-  //   if (isNaN(hours) || isNaN(minutes)) return 'Invalid Time';
-
-  //   const period = hours >= 12 ? 'PM' : 'AM';
-  //   const formattedHours = hours % 12 || 12;
-  //   return `${formattedHours}:${String(minutes).padStart(2, '0')} ${period}`;
-  // };
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -154,7 +149,7 @@ const UserForm = () => {
     }
     if (!formData.gender) newErrors.gender = 'Gender is required';
     if (!formData.age) {
-      newErrors.age = '';
+      newErrors.age = 'Required';
     }
     if (!formData.doctor) newErrors.doctor = 'Doctor selection is required';
     if (!formData.day) newErrors.day = 'Day selection is required';
@@ -176,6 +171,7 @@ const UserForm = () => {
     }
 
     try {
+      setisLoadingButton(true)
       const response = await axios.post(
         `${process.env.REACT_APP_APIURL}/api/bookings`,
         formData,
@@ -187,16 +183,17 @@ const UserForm = () => {
         }
       );
 
-      console.log("response booking:::::", response);
-
       if (response.status === 201) {
+        setisLoadingButton(false)
         setBookingData(response.data);
         setIsFormSubmitted(true);
         toast.success('Booking confirmed!');
       } else {
+        setisLoadingButton(false)
         toast.error('Failed to book the appointment.');
       }
     } catch (error) {
+      setisLoadingButton(false)
       toast.error('An error occurred while booking.');
       console.error('Error:', error);
     }
@@ -382,7 +379,7 @@ const UserForm = () => {
                 >
                   <option value="">Select Doctor</option>
                   {doctors.map((doctor, index) => (
-                    <option key={index} value={doctor.name}>
+                    <option key={index} value={doctor.id}>
                       {`${doctor.name} (${doctor.specialization})`}
                     </option>
                   ))}
@@ -432,9 +429,21 @@ const UserForm = () => {
                 {errors.timeSlot && <span className="error-message">{errors.timeSlot}</span>}
               </div>
 
-              <button type="submit" className="submit-btn">
-                Submit
-              </button>
+
+              {
+                isLoadingButton ?
+                  <button className="submit-btn">
+                    <div class="spinner-border" role="status" style={{ height: 15, width: 15 }}>
+                      <span class="sr-only">Loading...</span>
+                    </div> Please Wait..
+                  </button>
+                  :
+                  <button type="submit" className="submit-btn">
+                    Submit 
+                  </button>
+              }
+
+
             </div>
 
             <ToastContainer />

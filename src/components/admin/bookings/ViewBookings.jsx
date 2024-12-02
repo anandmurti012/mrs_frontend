@@ -14,24 +14,20 @@ import Pagination from "../../Pagination";
 import Loading from "../../Loading";
 
 const ViewBookings = ({ fetchAppointments }) => {
-  //-------------------- Dev By Amit --------------------
   const admin = useSelector((state) => state.doctor.user);
   // console.log(admin?.passCode)
 
   const [isPageLoading, setIsPageLoading] = useState(true)
+  const [isLoadingButton, setisLoadingButton] = useState(false)
 
-  //------------------- Dev By Anand --------------------
   const [bookings, setBookings] = useState([]);
   const [doctors, setDoctors] = useState([]); // To store available doctors
-  const [loading, setLoading] = useState(true);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isPasscodeModalOpen, setIsPasscodeModalOpen] = useState(false);
   const [actionType, setActionType] = useState(""); // "confirm" or "cancel"
   const [passcode, setPasscode] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  // const [searchDoctorTerm, setSearchDoctorTerm] = useState("");
   const [selectedDoctor, setSelectedDoctor] = useState(""); // To store selected doctor
 
   const auth = useSelector((state) => state.doctor);
@@ -77,11 +73,17 @@ const ViewBookings = ({ fetchAppointments }) => {
 
   const handleConfirm = async (bookingId) => {
     try {
+      setisLoadingButton(true)
       await axios.put(
         `${process.env.REACT_APP_APIURL}/api/bookings/${bookingId}/confirm`
-      );
-      toast.success("Booking confirmed successfully!");
-      fetchBookings(searchTerm, selectedDate, selectedDoctor, currentPage);
+      ).then(response => {
+        setisLoadingButton(false)
+        toast.success("Booking confirmed successfully!");
+        fetchBookings(searchTerm, selectedDate, selectedDoctor, currentPage);
+      }).catch(error => {
+        setisLoadingButton(false)
+        toast.error(error.response?.data?.msg || error.message);
+      })
     } catch (error) {
       toast.error("Error confirming booking");
     }
@@ -104,7 +106,6 @@ const ViewBookings = ({ fetchAppointments }) => {
 
   const fetchBookings = async (searchTerm, selectedDate, selectedDoctor, currentPage) => {
     try {
-      setLoading(true);
       setIsPageLoading(true)
       await axios.get(
         `${process.env.REACT_APP_APIURL}/api/bookings/?searchTerm=${searchTerm}&selectedDate=${selectedDate}&selectedDoctor=${selectedDoctor}&page=${currentPage}`, {
@@ -123,11 +124,9 @@ const ViewBookings = ({ fetchAppointments }) => {
       }).catch(error => {
         setIsPageLoading(false)
         toast.error(error.response?.data?.msg || error.message);
-        setLoading(false);
       })
     } catch (error) {
       toast.error("Failed to load bookings");
-      setLoading(false);
       setIsPageLoading(false)
     }
   };
@@ -227,7 +226,7 @@ const ViewBookings = ({ fetchAppointments }) => {
           </InputGroup>
 
         </div>
-        
+
       </div>
 
       {
@@ -259,6 +258,9 @@ const ViewBookings = ({ fetchAppointments }) => {
                   <th data-title="Assigned Doctor">
                     Doctor
                   </th>
+                  <th data-title="Assigned Doctor">
+                    Specialization
+                  </th>
                   <th data-title="Selected Day">
                     Day
                   </th>
@@ -280,6 +282,7 @@ const ViewBookings = ({ fetchAppointments }) => {
                       <td>{booking?.email}</td>
                       <td>{booking?.gender}</td>
                       <td>{booking?.doctor}</td>
+                      <td>{booking?.specialization}</td>
                       <td>{booking?.day || "N/A"}</td>
                       <td>
                         {booking?.timeSlot
@@ -435,7 +438,6 @@ const ViewBookings = ({ fetchAppointments }) => {
             className="modal-dialog"
             style={{
               width: "30%", // Set the width to 50% of its container
-              maxWidth: "250px", // Optional: Set a max width for responsiveness
               margin: "auto", // Center the modal horizontally
               marginTop: '100px'
             }}
@@ -475,9 +477,18 @@ const ViewBookings = ({ fetchAppointments }) => {
                 />
               </div>
               <div className="modal-footer">
-                <button className="btn btn-primary" onClick={handlePasscodeSubmit}>
-                  Submit
-                </button>
+                {
+                  isLoadingButton ?
+                    <button className="btn btn-primary">
+                      <div class="spinner-border" role="status" style={{ height: 15, width: 15 }}>
+                        <span class="sr-only">Loading...</span>
+                      </div>  Submit
+                    </button>
+                    :
+                    <button className="btn btn-primary" onClick={handlePasscodeSubmit}>
+                      Submit
+                    </button>
+                }
                 <button className="btn btn-secondary" onClick={closePasscodeModal}>
                   Cancel
                 </button>
