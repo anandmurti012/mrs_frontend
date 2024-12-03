@@ -545,7 +545,7 @@ const ConfirmBookings = () => {
                                             <strong>Doctor:</strong> {selectedBooking?.doctor}
                                         </div>
                                         <div className="col-md-4 mt-3">
-                                            <strong>Consultation Fees:</strong> {selectedBooking?.fees}
+                                            <strong>Consultation Fees:</strong> ₹{selectedBooking?.fees}
                                         </div>
                                         <div className="row odd-row">
                                             <div className="col-md-12 mt-3">
@@ -577,7 +577,7 @@ const ConfirmBookings = () => {
                             <div className="modal-footer">
                                 {selectedBooking?.status === "Confirmed" && (
                                     <button className="btn btn-danger" onClick={() => openPasscodeModal("cancel")}>
-                                        Cancel
+                                        Cancel Booking
                                     </button>
                                 )}
                                 <button className="btn btn-info" onClick={closePopup}>

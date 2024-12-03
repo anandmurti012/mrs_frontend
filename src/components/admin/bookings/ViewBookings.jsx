@@ -374,6 +374,9 @@ const ViewBookings = ({ fetchAppointments }) => {
                       <strong>Doctor:</strong> {selectedBooking?.doctor}
                     </div>
                   </div>
+                  <div className="col-md-4 mb-3">
+                    <strong>Consultation Fees:</strong> ₹{selectedBooking?.fees}
+                  </div>
                   <div className="row odd-row">
                     <div className="col-md-12">
                       <strong>Address:</strong> {selectedBooking?.address}

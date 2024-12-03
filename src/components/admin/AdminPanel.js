@@ -78,10 +78,10 @@ const AdminPanel = () => {
                 </nav>
             </aside>
 
-            <main style={{ width: '80%', height: '100vh', background: '#fff', overflow: 'auto' }}>
+            <main style={{ width: '80%', height: '100vh', background: '#fff',overflow: 'auto'  }}>
                 <TopNav activeTab={activeTab} />
 
-                <div style={{ padding: '10px' }} >
+                <div style={{ padding: '10px',overflow: 'auto' ,height:'90vh'}} >
                     {renderContent()}
                 </div>
 
