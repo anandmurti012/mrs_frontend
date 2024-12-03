@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 
-import './ViewDoctors.css';
+import './styles/ViewDoctors.css';
 
 const ViewDoctors = () => {
   const [doctors, setDoctors] = useState([]);
