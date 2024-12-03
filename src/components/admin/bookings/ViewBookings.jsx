@@ -4,11 +4,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./styles/ViewBookings.css"; // Add your CSS styles here
 import { useSelector } from 'react-redux';
-import { Button, InputGroup, NavLink } from 'react-bootstrap';
+import { InputGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import dayjs from 'dayjs';
-import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import Pagination from "../../Pagination";
 import Loading from "../../Loading";
@@ -72,21 +70,7 @@ const ViewBookings = ({ fetchAppointments }) => {
   };
 
   const handleConfirm = async (bookingId) => {
-    try {
-      setisLoadingButton(true)
-      await axios.put(
-        `${process.env.REACT_APP_APIURL}/api/bookings/${bookingId}/confirm`
-      ).then(response => {
-        setisLoadingButton(false)
-        toast.success("Booking confirmed successfully!");
-        fetchBookings(searchTerm, selectedDate, selectedDoctor, currentPage);
-      }).catch(error => {
-        setisLoadingButton(false)
-        toast.error(error.response?.data?.msg || error.message);
-      })
-    } catch (error) {
-      toast.error("Error confirming booking");
-    }
+
   };
 
 
@@ -162,15 +146,28 @@ const ViewBookings = ({ fetchAppointments }) => {
     setPasscode("");
   };
 
-  const handlePasscodeSubmit = () => {
-
+  const handlePasscodeSubmit = async () => {
     if (passcode === admin?.passCode) {
-      // Replace '1234' with the actual passcode
       if (actionType === "confirm") {
-        handleConfirm(selectedBooking?.bookingId);
+        try {
+          setisLoadingButton(true)
+          await axios.put(
+            `${process.env.REACT_APP_APIURL}/api/bookings/${selectedBooking?.bookingId}/confirm`
+          ).then(response => {
+            toast.success("Booking confirmed successfully!");
+            setisLoadingButton(false)
+            closePasscodeModal();
+            closePopup();
+            fetchBookings(searchTerm, selectedDate, selectedDoctor, currentPage);
+          }).catch(error => {
+            setisLoadingButton(false)
+            toast.error(error.response?.data?.msg || error.message);
+          })
+        } catch (error) {
+          setisLoadingButton(false)
+          toast.error("Error confirming booking");
+        }
       }
-      closePasscodeModal();
-      closePopup();
     } else {
       toast.error("Incorrect passcode");
     }
@@ -234,7 +231,7 @@ const ViewBookings = ({ fetchAppointments }) => {
           <Loading />
           :
           <div>
-            <table >
+            <table style={{ width: '100%', maxWidth: '100%' }} >
               <thead>
                 <tr>
                   <th data-title="Booking Id">

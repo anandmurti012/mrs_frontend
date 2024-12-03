@@ -3,13 +3,14 @@ import React, { useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './AdminPanel.css';
-import AddDoctorsForm from './AddDoctorsForm';
-import AddAdmin from './AddAdmin';
-import ViewDoctors from './ViewDoctors';
 import TopNav from '../TopNav';
 import ViewBookings from './bookings/ViewBookings';
 import ConfirmBookings from './bookings/ConfirmBookings';
 import { useSelector } from 'react-redux';
+import ViewDoctors from './doctors/ViewDoctors';
+import AddDoctorsForm from './doctors/AddDoctorsForm';
+import AddAdmin from './admins/AddAdmin';
+import ViewAdmins from './admins/ViewAdmins';
 
 const AdminPanel = () => {
     const admin = useSelector((state) => state.doctor.user);
@@ -33,6 +34,8 @@ const AdminPanel = () => {
                 return <AddDoctorsForm />;
             case 'Make an Admin':
                 return <AddAdmin />;
+            case 'View an Admins':
+                return <ViewAdmins />;
             default:
                 return null;
         }
@@ -61,9 +64,14 @@ const AdminPanel = () => {
                             Add Doctors
                         </li>
                         {admin?.type === 'superAdmin' && (
-                            <li className={activeTab === 'Make an Admin' ? 'active' : ''} onClick={() => setActiveTab('Make an Admin')}>
-                                Create Admin
-                            </li>
+                            <>
+                                <li className={activeTab === 'Make an Admin' ? 'active' : ''} onClick={() => setActiveTab('Make an Admin')}>
+                                    Create Admin
+                                </li>
+                                <li className={activeTab === 'View an Admins' ? 'active' : ''} onClick={() => setActiveTab('View an Admins')}>
+                                    View Admins
+                                </li>
+                            </>
                         )}
 
                     </ul>

@@ -14,13 +14,11 @@ const ConfirmBookings = () => {
     const [loading, setLoading] = useState(true);
     const [selectedBooking, setSelectedBooking] = useState(null);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
     const [doctors, setDoctors] = useState([]);
     const [passcode, setPasscode] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
     const [isPasscodeModalOpen, setIsPasscodeModalOpen] = useState(false);
     const [actionType, setActionType] = useState(""); // "confirm" or "cancel"
-    const [searchDoctorTerm, setSearchDoctorTerm] = useState("");
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedDoctor, setSelectedDoctor] = useState(""); // To store selected doctor
     const [status, setStatus] = useState("");
@@ -35,6 +33,7 @@ const ConfirmBookings = () => {
         setCurrentPage(page);
     }
 
+    const [isLoadingButton, setisLoadingButton] = useState(false)
 
 
     const fetchDoctors = async () => {
@@ -148,8 +147,8 @@ const ConfirmBookings = () => {
       <p>Phone:- 033 2274 4726/ 2274 3725 | Email: info@abchospital.com</p>
     </div>
   </div> 
-<p style="font-weight: bold; color: ${selectedBooking.status === 'Confirmed' ? 'green' : selectedBooking.status === 'Cancelled' ? 'red' : 'black'};">
-  Booking ${selectedBooking.status}
+<p style="font-weight: bold; color: ${selectedBooking?.status === 'Confirmed' ? 'green' : selectedBooking?.status === 'Cancelled' ? 'red' : 'black'};">
+  Booking ${selectedBooking?.status}
 </p>
 
   <div class="content" style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px;">
@@ -157,16 +156,16 @@ const ConfirmBookings = () => {
     <div class="left-column" style="flex: 1; max-width: 50%;">
       <h3 class="section-title"><strong>Appointment Details</strong></h3>
       <div class="details">
-        <p> Booking ID:  ${selectedBooking.bookingId}</p>
-        <p> Name:  ${selectedBooking.name}</p>
-        <p> Gender:  ${selectedBooking.gender}</p>
-        <p> Age: ${selectedBooking.age}</p>
+        <p> Booking ID:  ${selectedBooking?.bookingId}</p>
+        <p> Name:  ${selectedBooking?.name}</p>
+        <p> Gender:  ${selectedBooking?.gender}</p>
+        <p> Age: ${selectedBooking?.age}</p>
       </div>
       <h3 class="section-title"><strong>Contact Information</strong></h3>
       <div class="details">
-        <p> Email:  ${selectedBooking.email}</p>
-        <p> Phone:  ${selectedBooking.phone}</p>
-        <p> Address:  ${selectedBooking.address}</p>
+        <p> Email:  ${selectedBooking?.email}</p>
+        <p> Phone:  ${selectedBooking?.phone}</p>
+        <p> Address:  ${selectedBooking?.address}</p>
       </div>
     </div>
 
@@ -174,12 +173,12 @@ const ConfirmBookings = () => {
     <div class="right-column" style="flex: 1; max-width: 50%;">
       <h3 class="section-title"><strong>Doctor's Details</strong></h3>
       <div class="details">
-        <p> Doctor:  ${selectedBooking.doctor}</p>
-        <p> Consultation fees:  ${selectedBooking.fees}</p>
+        <p> Doctor:  ${selectedBooking?.doctor}</p>
+        <p> Consultation fees:  ${selectedBooking?.fees}</p>
          
-        <p> Day: ${selectedBooking.day || "N/A"}</p>
-        <p> Appointment Schedule:  ${selectedBooking.timeSlot
-                ? selectedBooking.timeSlot
+        <p> Day: ${selectedBooking?.day || "N/A"}</p>
+        <p> Appointment Schedule:  ${selectedBooking?.timeSlot
+                ? selectedBooking?.timeSlot
                     .split(" - ")
                     .map((time) => formatTimeTo12Hour(time))
                     .join(" - ")
@@ -188,7 +187,7 @@ const ConfirmBookings = () => {
       </div>
       <h3 class="section-title"><strong>Booking Summary</strong></h3>
       <div class="details">
-        <p> Booking Time:  ${formatTimestamp(selectedBooking.timeStamp)}</p>
+        <p> Booking Time:  ${formatTimestamp(selectedBooking?.timeStamp)}</p>
       </div>
     </div>
   </div>
@@ -214,17 +213,7 @@ const ConfirmBookings = () => {
     const handleDateChange = (e) => {
         setSelectedDate(e.target.value);
     };
-    const handleCancel = async (bookingId) => {
-        try {
-            await axios.put(
-                `${process.env.REACT_APP_APIURL}/api/bookings/${bookingId}/toBeDeleted`
-            );
-            toast.success("Booking canceled successfully!");
-            fetchBookings(searchTerm, selectedDoctor, selectedDate, status, currentPage);
-        } catch (error) {
-            toast.error("Error canceling booking");
-        }
-    };
+
     const formatTimeTo12Hour = (time) => {
         if (!time || typeof time !== 'string') return 'N/A';
         const [hours, minutes] = time.split(':').map(Number);
@@ -283,7 +272,6 @@ const ConfirmBookings = () => {
 
         // Cleanup the timeout if the component unmounts or dependencies change before the debounce time
         return () => clearTimeout(debounceTimeout);
-
     }, [searchTerm, selectedDoctor, selectedDate, status, currentPage]);
 
 
@@ -296,45 +284,15 @@ const ConfirmBookings = () => {
         setIsPopupOpen(false);
         setSelectedBooking(null);
     };
-    useEffect(() => {
-        const handler = setTimeout(() => {
-            filterData(0);
-        }, 500); // Delay in milliseconds (e.g., 300ms)
 
-        // Cleanup function to clear the timeout if searchTerm changes
-        return () => {
-            clearTimeout(handler);
-        };
-    }, [searchTerm, selectedDate, status]);
 
     const searchInput = (e) => {
         setSearchTerm(e.target.value);
-
     };
 
 
     const handleStatusChange = (e) => {
         setStatus(e.target.value);
-    };
-
-    const filterData = async (page) => {
-        try {
-            setIsLoading()
-                // await axios.get(`${process.env.REACT_APP_APIURL}/api/admins/get-users?page=${page}&searchTerm=${searchTerm}&subscriptionType=${subscriptionType}&status=${status}`, {
-                //   headers: {
-                //     'Content-Type': 'application/json',
-                //     'Authorization': token
-                //   }
-                // })
-                .then((response) => {
-                    console.log(response.data);
-                })
-                .catch((error) => {
-                    console.error("There was an error fetching the data:", error);
-                });
-        } catch (error) {
-            console.log("APi call error", error);
-        }
     };
 
     const openPasscodeModal = (action) => {
@@ -347,16 +305,30 @@ const ConfirmBookings = () => {
         setPasscode("");
     };
 
-    const handlePasscodeSubmit = () => {
+    const handlePasscodeSubmit = async () => {
         if (passcode === admin?.passCode) {
-            // Replace '1234' with the actual passcode
-
             if (actionType === "cancel") {
-                handleCancel(selectedBooking.bookingId);
+                try {
+                    setisLoadingButton(true)
+                    await axios.put(
+                        `${process.env.REACT_APP_APIURL}/api/bookings/${selectedBooking?.bookingId}/toBeDeleted`
+                    ).then(res => {
+                        toast.success("Booking canceled successfully!");
+                        setisLoadingButton(false)
+                        closePasscodeModal();
+                        closePopup();
+                        fetchBookings(searchTerm, selectedDoctor, selectedDate, status, currentPage);
+                    }).catch(error => {
+                        setisLoadingButton(false)
+                        toast.error("Backend Error 503");
+                    })
+                } catch (error) {
+                    setisLoadingButton(false)
+                    toast.error("Error canceling booking");
+                }
             }
-            closePasscodeModal();
-            closePopup();
         } else {
+            setisLoadingButton(false)
             toast.error("Incorrect passcode");
         }
     };
@@ -425,7 +397,7 @@ const ConfirmBookings = () => {
                             <Loading />
                             :
                             <>
-                                <table style={{ width: '100%' }}>
+                                <table style={{ width: '100%', maxWidth: '100%' }} >
                                     <thead>
                                         <tr>
                                             <th data-title="Booking Id">Booking Id</th>
@@ -435,6 +407,9 @@ const ConfirmBookings = () => {
                                             {/* <th style={{ width: '7%' }} data-title="Email Address">Email</th> */}
                                             {/* <th style={{ width: '5%' }} data-title="Gender">Gender</th> */}
                                             <th data-title="Assigned Doctor">Doctor</th>
+                                            <th data-title="Assigned Doctor">
+                                                Specialization
+                                            </th>
                                             <th data-title="Selected Day">Day</th>
                                             <th data-title="Time Slot">Appointment</th>
                                             <th data-title="status">Status</th>
@@ -443,29 +418,27 @@ const ConfirmBookings = () => {
                                     <tbody>
                                         {bookings.length > 0 ? (
                                             bookings.map((booking) => (
-                                                <tr key={booking.id} onClick={() => openPopup(booking)}>
-                                                    <td style={{ color: '#0751be' }}><strong>{booking.bookingId}</strong></td>
-                                                    <td style={{ cursor: 'pointer', color: '#007BFF' }}><strong>{booking.name}</strong></td>
-                                                    {/* <td>{booking.age}</td> */}
-                                                    <td>{booking.phone}</td>
-                                                    {/* <td>{booking.email}</td> */}
-                                                    {/* <td>{booking.gender}</td> */}
-                                                    <td>{booking.doctor}</td>
-                                                    <td>{booking.day || 'N/A'}</td>
+                                                <tr key={booking?.id}>
+                                                    <td style={{ color: '#0751be' }}><strong>{booking?.bookingId}</strong></td>
+                                                    <td style={{ cursor: 'pointer', color: '#007BFF' }} onClick={() => openPopup(booking)}><strong>{booking?.name}</strong></td>
+                                                    <td>{booking?.phone}</td>
+                                                    <td>{booking?.doctor}</td>
+                                                    <td>{booking?.specialization}</td>
+                                                    <td>{booking?.day || 'N/A'}</td>
                                                     <td>
-                                                        {booking.timeSlot ? (
-                                                            booking.timeSlot.split(' - ').map(time => formatTimeTo12Hour(time)).join(' - ')
+                                                        {booking?.timeSlot ? (
+                                                            booking?.timeSlot.split(' - ').map(time => formatTimeTo12Hour(time)).join(' - ')
                                                         ) : 'N/A'}
                                                     </td>
                                                     <td
                                                         style={{
-                                                            backgroundColor: booking.status === "Confirmed" ? "green" : booking.status === "Cancelled" ? "red" : "transparent",
+                                                            backgroundColor: booking?.status === "Confirmed" ? "green" : booking?.status === "Cancelled" ? "red" : "transparent",
                                                             color: "white",
                                                             fontWeight: "bold",
                                                             textAlign: "center",
                                                         }}
                                                     >
-                                                        {booking.status}
+                                                        {booking?.status}
                                                     </td>
 
                                                 </tr>
@@ -504,14 +477,18 @@ const ConfirmBookings = () => {
                         <div className="modal-content">
                             <div className="modal-header">
                                 {/* Conditional rendering based on booking status */}
-                                {selectedBooking.status === "Confirmed" ? (
-                                    <button className="btn btn-success">
-                                        Booking {selectedBooking.status}{" "}
-                                        <FontAwesomeIcon icon={faCircleCheck} className="confirmation-icon" />
+                                {selectedBooking?.status === "Confirmed" ? (
+                                    <button className="btn btn-success" >
+                                        Booking {selectedBooking?.status}{" "}
+
+                                        <img src='https://cdn-icons-png.flaticon.com/128/9458/9458915.png' alt='badge'
+                                            style={{ height: 20, width: 20 }}
+                                        />
+                                        {/* <FontAwesomeIcon icon={faCircleCheck} className="confirmation-icon" /> */}
                                     </button>
                                 ) : (
                                     <button className="btn btn-danger">
-                                        Booking {selectedBooking.status}{" "}
+                                        Booking {selectedBooking?.status}{" "}
                                         <FontAwesomeIcon icon={faCancel} className="cancel-icon" />
                                     </button>
                                 )}
@@ -543,47 +520,47 @@ const ConfirmBookings = () => {
                                 <div className="container-fluid">
                                     <div className="col-md-5">
                                         <h5 style={{ color: "grey" }}>
-                                            <strong>Booking Id: {selectedBooking.bookingId}</strong>
+                                            <strong>Booking Id: {selectedBooking?.bookingId}</strong>
                                         </h5>
                                     </div>
                                     <div className="row mb-3 even-row">
                                         <div className="col-md-5">
-                                            <strong>Name:</strong> {selectedBooking.name}
+                                            <strong>Name:</strong> {selectedBooking?.name}
                                         </div>
                                         <div className="col-md-3">
-                                            <strong>Gender:</strong> {selectedBooking.gender}
+                                            <strong>Gender:</strong> {selectedBooking?.gender}
                                         </div>
                                         <div className="col-md-4">
-                                            <strong>Age:</strong> {selectedBooking.age}
+                                            <strong>Age:</strong> {selectedBooking?.age}
                                         </div>
                                     </div>
                                     <div className="row mb-3 odd-row">
                                         <div className="col-md-5">
-                                            <strong>Email:</strong> {selectedBooking.email}
+                                            <strong>Email:</strong> {selectedBooking?.email}
                                         </div>
                                         <div className="col-md-3">
-                                            <strong>Phone:</strong> {selectedBooking.phone}
+                                            <strong>Phone:</strong> {selectedBooking?.phone}
                                         </div>
                                         <div className="col-md-4">
-                                            <strong>Doctor:</strong> {selectedBooking.doctor}
+                                            <strong>Doctor:</strong> {selectedBooking?.doctor}
                                         </div>
                                         <div className="col-md-4 mt-3">
-                                            <strong>Consultation Fees:</strong> {selectedBooking.fees}
+                                            <strong>Consultation Fees:</strong> {selectedBooking?.fees}
                                         </div>
                                         <div className="row odd-row">
                                             <div className="col-md-12 mt-3">
-                                                <strong>Address:</strong> {selectedBooking.address}
+                                                <strong>Address:</strong> {selectedBooking?.address}
                                             </div>
                                         </div>
                                     </div>
                                     <div className="row mb-3 even-row">
                                         <div className="col-md-3">
-                                            <strong>Day:</strong> {selectedBooking.day || "N/A"}
+                                            <strong>Day:</strong> {selectedBooking?.day || "N/A"}
                                         </div>
                                         <div className="col-md-6">
                                             <strong>Appointment Schedule:</strong>{" "}
-                                            {selectedBooking.timeSlot
-                                                ? selectedBooking.timeSlot
+                                            {selectedBooking?.timeSlot
+                                                ? selectedBooking?.timeSlot
                                                     .split(" - ")
                                                     .map((time) => formatTimeTo12Hour(time))
                                                     .join(" - ")
@@ -592,13 +569,13 @@ const ConfirmBookings = () => {
                                     </div>
                                     <div className="row odd-row">
                                         <div className="col-md-8">
-                                            <strong>Booking Time:</strong> {formatTimestamp(selectedBooking.timeStamp)}
+                                            <strong>Booking Time:</strong> {formatTimestamp(selectedBooking?.timeStamp)}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                {selectedBooking.status === "Confirmed" && (
+                                {selectedBooking?.status === "Confirmed" && (
                                     <button className="btn btn-danger" onClick={() => openPasscodeModal("cancel")}>
                                         Cancel
                                     </button>
@@ -628,7 +605,6 @@ const ConfirmBookings = () => {
                         className="modal-dialog"
                         style={{
                             width: "30%", // Reduce the width to 50% of the current size
-                            maxWidth: "250px", // Optional: limit the maximum width for responsiveness
                             margin: "auto", // Center the modal horizontally
                             marginTop: '130px'
                         }}
@@ -668,9 +644,19 @@ const ConfirmBookings = () => {
                                 />
                             </div>
                             <div className="modal-footer">
-                                <button className="btn btn-primary" onClick={handlePasscodeSubmit}>
-                                    Submit
-                                </button>
+                                {
+                                    isLoadingButton ?
+                                        <button className="btn btn-primary">
+                                            <div class="spinner-border" role="status" style={{ height: 15, width: 15 }}>
+                                                <span class="sr-only">Loading...</span>
+                                            </div>  Submit
+                                        </button>
+                                        :
+                                        <button className="btn btn-primary" onClick={handlePasscodeSubmit}>
+                                            Submit
+                                        </button>
+                                }
+
                                 <button className="btn btn-secondary" onClick={closePasscodeModal}>
                                     Cancel
                                 </button>

@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import { ToastContainer, toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
-import './adddoctors.css';
+import './styles/adddoctors.css';
 
 const AddDoctorsForm = () => {
     const [availability, setAvailability] = useState([]);
@@ -15,11 +15,11 @@ const AddDoctorsForm = () => {
     const admin = useSelector((state) => state.doctor.user);
     const openPasscodeModal = () => setIsPasscodeModalOpen(true);
     const closePasscodeModal = () => setIsPasscodeModalOpen(false);
+    const [isLoadingButton, setisLoadingButton] = useState(false)
+
 
     const handlePasscodeSubmit = () => {
         if (passcode === admin?.passCode) {
-            // Close modal and submit the form if passcode matches
-            closePasscodeModal();
             formik.handleSubmit();
         } else {
             toast.error('Invalid passcode');
@@ -54,7 +54,7 @@ const AddDoctorsForm = () => {
             phone: '',
             address: '',
             consultation: '',
-            fees:'',
+            fees: '',
             experience: '',
             specialization: '',
             availability: [],
@@ -75,11 +75,21 @@ const AddDoctorsForm = () => {
                     ...values,
                     availability: JSON.stringify(availability),
                 };
-                await axios.post(`${process.env.REACT_APP_APIURL}/api/doctors/`, modifiedValues);
-                toast.success('Doctor added successfully!');
-                formik.resetForm();
-                setAvailability([]);
+
+                setisLoadingButton(true)
+                await axios.post(`${process.env.REACT_APP_APIURL}/api/doctors/`, modifiedValues)
+                    .then(res => {
+                        setisLoadingButton(false)
+                        closePasscodeModal();
+                        toast.success('Doctor added successfully!');
+                        formik.resetForm();
+                        setAvailability([]);
+                    }).catch(error => {
+                        setisLoadingButton(false)
+                        toast.error(error.response?.data?.msg || error.message);
+                    })
             } catch (error) {
+                setisLoadingButton(false)
                 toast.error('Error adding doctor');
             }
         },
@@ -284,7 +294,6 @@ const AddDoctorsForm = () => {
                     <div
                         className="modal-dialog"
                         style={{
-                            maxWidth: "15%", // Reduce the modal's width to 50%
                             margin: "1.75rem auto", // Center align
                             marginTop: '200px'
                         }}
@@ -324,9 +333,18 @@ const AddDoctorsForm = () => {
                                 />
                             </div>
                             <div className="modal-footer">
-                                <button className="btn btn-primary" onClick={handlePasscodeSubmit}>
-                                    Submit
-                                </button>
+                                {
+                                    isLoadingButton ?
+                                        <button className="btn btn-primary">
+                                            <div class="spinner-border" role="status" style={{ height: 15, width: 15 }}>
+                                                <span class="sr-only">Loading...</span>
+                                            </div>  Submit
+                                        </button>
+                                        :
+                                        <button className="btn btn-primary" onClick={handlePasscodeSubmit}>
+                                            Submit
+                                        </button>
+                                }
                                 <button className="btn btn-secondary" onClick={closePasscodeModal}>
                                     Cancel
                                 </button>

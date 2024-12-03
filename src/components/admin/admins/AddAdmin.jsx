@@ -3,10 +3,10 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { ToastContainer, toast } from 'react-toastify';
-import { FaEye, FaEyeSlash } from 'react-icons/fa'; // FontAwesome eye icons
 import 'react-toastify/dist/ReactToastify.css';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // FontAwesome eye icons
 import { useSelector } from 'react-redux';
-import './addAdmin.css';
+import './styles/addAdmin.css';
 
 const AddAdmin = () => {
 
