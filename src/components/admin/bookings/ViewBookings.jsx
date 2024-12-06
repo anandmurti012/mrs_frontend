@@ -161,11 +161,11 @@ const ViewBookings = ({ fetchAppointments }) => {
             fetchBookings(searchTerm, selectedDate, selectedDoctor, currentPage);
           }).catch(error => {
             setisLoadingButton(false)
-            toast.error(error.response?.data?.msg || error.message);
+            toast.error(error.response?.data?.message || error.response?.data?.msg || error.message);
           })
         } catch (error) {
           setisLoadingButton(false)
-          toast.error("Error confirming booking");
+          toast.error(error.response?.data?.message || error.response?.data?.msg || error.message);
         }
       }
     } else {
